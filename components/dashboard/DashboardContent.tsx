@@ -6,6 +6,7 @@ import { useWorkspace } from "@/context/WorkspaceContext";
 import CreateWorkspaceModal from "@/components/workspace/CreateWorkspaceModal";
 import UploadZone from "@/components/documents/UploadZone";
 import DocumentList from "@/components/documents/DocumentList";
+import ChatContainer from "@/components/chat/ChatContainer";
 
 export default function DashboardContent({ userEmail }: { userEmail: string }) {
   const { workspaces, activeWorkspace, loading } = useWorkspace();
@@ -256,57 +257,13 @@ export default function DashboardContent({ userEmail }: { userEmail: string }) {
           )}
         </div>
 
-        {/* Stage 5: RAG Chat Card */}
-        <div className="glass-panel" style={{ padding: "24px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
-            <div
-              style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "10px",
-                background: "rgba(99, 102, 241, 0.15)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#818cf8"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
-            </div>
-            <div>
-              <h3 style={{ fontSize: "16px", fontWeight: "600", color: "var(--text-primary)" }}>
-                RAG Document Chat
-              </h3>
-              <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Stage 5 Retrieval</span>
-            </div>
-          </div>
-          <p style={{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.5", marginBottom: "16px" }}>
-            Query documents strictly within <strong>{activeWorkspace?.name}</strong>. Enforced via <code>match_workspace_chunks</code> PostgreSQL function.
-          </p>
-          <div
-            style={{
-              padding: "16px",
-              borderRadius: "var(--radius-md)",
-              border: "1px dashed var(--border-subtle)",
-              background: "rgba(0, 0, 0, 0.2)",
-              textAlign: "center",
-              fontSize: "13px",
-              color: "var(--text-muted)",
-            }}
-          >
-            Stage 5 RAG Chat with Citation Badges coming next
-          </div>
-        </div>
+        {/* Stage 5: Live RAG Chat Container */}
+        {activeWorkspace && (
+          <ChatContainer
+            workspaceId={activeWorkspace.id}
+            workspaceName={activeWorkspace.name}
+          />
+        )}
       </div>
 
       <CreateWorkspaceModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />

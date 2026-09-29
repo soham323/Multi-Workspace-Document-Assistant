@@ -3,11 +3,11 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.8.0                                            |
+| **Version**   | 1.10.0                                           |
 | **Status**    | Active                                           |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 18:36 IST                             |
-| **Updated**   | 2026-09-29 23:45 IST                             |
+| **Updated**   | 2026-09-30 00:37 IST                             |
 | **Project**   | Multi-Workspace Document Assistant               |
 
 ---
@@ -16,6 +16,8 @@
 
 | Version | Date & Time          | Summary of Changes                                                                              |
 | :------ | :------------------- | :---------------------------------------------------------------------------------------------- |
+| 1.10.0  | 2026-09-30 00:37 IST | Stage 5 implemented (ST-5-1 to ST-5-9 in Testing). Retriever, injection-resistant prompt builder, Gemini RAG pipeline, POST /api/chat, GET/DELETE /api/chat/messages, and Glassmorphic Chat UI with Citation badges and Debug Inspector mounted live. |
+| 1.9.0   | 2026-09-30 00:32 IST | Stage 4 marked 100% Done (ST-4-1 to ST-4-8 verified live by user and merged into dev). Stage 5 In Progress. |
 | 1.8.0   | 2026-09-29 23:45 IST | Stage 4 implemented (ST-4-1 to ST-4-8 in Testing). Ingestion pipeline (upload route, SHA-256 idempotency, extractors, chunker, Gemini 768-dim embeddings, DB chunk insert), UploadZone and DocumentList UI mounted in Dashboard. |
 | 1.7.0   | 2026-09-29 23:22 IST | Stage 3 marked 100% Done (ST-3-1 to ST-3-5 verified live by user). Stage 4 In Progress.        |
 | 1.6.0   | 2026-09-29 23:12 IST | Stage 3 built (ST-3-1 to ST-3-5 in Testing). Workspace API routes, Context, Switcher dropdown, Modal, and dynamic dashboard views. |
@@ -33,11 +35,11 @@
 | Metric         | Count |
 | :------------- | :---- |
 | Total Tasks    | 65    |
-| ✅ Done        | 25    |
+| ✅ Done        | 33    |
 | 🟡 In Progress | 0     |
-| 🔵 Testing     | 8     |
+| 🔵 Testing     | 9     |
 | 🔴 Blocked     | 0     |
-| ⬜ To Do       | 32    |
+| ⬜ To Do       | 23    |
 
 ---
 
@@ -118,14 +120,14 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-4-1   | File upload API route (POST `/api/documents/upload`) — accepts PDF, TXT, DOCX; validates size ≤10 MB | 🔵 Testing | FR-006                    | Accepts multipart form data, enforces ≤10MB size limit and file extension guard |
-| ST-4-2   | SHA-256 hash computation on upload; duplicate detection against `documents.file_hash`    | 🔵 Testing | FR-009, NFR-006, TS-006         | Computes SHA-256 hash, queries workspace documents, returns HTTP 409 on duplicate |
-| ST-4-3   | Text extraction: PDF parsing (`pdf-parse`), plain text pass-through, DOCX parsing (`mammoth`) | 🔵 Testing | FR-006                          | Modular extractors in `lib/ingestion/extractor.ts` with whitespace cleaning |
-| ST-4-4   | Text chunking: recursive character splitter (200–600 tokens, 50-token overlap)           | 🔵 Testing | FR-007                          | Implemented in `lib/ingestion/chunker.ts` preserving document metadata |
-| ST-4-5   | Gemini `gemini-embedding-001` (768-dim) integration — batch embed all chunks (server-side only) | 🔵 Testing | FR-008, NFR-001, INT-002        | Batch embedding runner in `lib/ingestion/embedder.ts` using calibrated 768-dim model |
-| ST-4-6   | Store chunk records in `document_chunks` with workspace_id, document_id, content, metadata, embedding | 🔵 Testing | FR-007, FR-008, TC-002 | Inserted in batches of 50 chunks with strict workspace_id tagging |
-| ST-4-7   | Update `documents.status` to `ingested` on success; `failed` on error                   | 🔵 Testing | FR-006, NFR-005                 | Atomic status transition to `ingested` with chunk_count, or `failed` on catch |
-| ST-4-8   | Document List UI component: shows all docs in active workspace with status badges        | 🔵 Testing | FR-019                          | `UploadZone.tsx` and `DocumentList.tsx` mounted live in `DashboardContent.tsx` |
+| ST-4-1   | File upload API route (POST `/api/documents/upload`) — accepts PDF, TXT, DOCX; validates size ≤10 MB | ✅ Done   | FR-006                    | Verified live by user; accepts multipart, ≤10MB size limit and extension guard |
+| ST-4-2   | SHA-256 hash computation on upload; duplicate detection against `documents.file_hash`    | ✅ Done   | FR-009, NFR-006, TS-006         | Verified live by user; SHA-256 hash idempotency check returns HTTP 409 |
+| ST-4-3   | Text extraction: PDF parsing (`pdf-parse`), plain text pass-through, DOCX parsing (`mammoth`) | ✅ Done   | FR-006                          | Verified live by user; PDF, TXT, DOCX text extracted with whitespace cleaning |
+| ST-4-4   | Text chunking: recursive character splitter (200–600 tokens, 50-token overlap)           | ✅ Done   | FR-007                          | Verified live by user; recursive chunker preserves document metadata |
+| ST-4-5   | Gemini `gemini-embedding-001` (768-dim) integration — batch embed all chunks (server-side only) | ✅ Done   | FR-008, NFR-001, INT-002        | Verified live by user; calibrated 768-dim embeddings generated in batches |
+| ST-4-6   | Store chunk records in `document_chunks` with workspace_id, document_id, content, metadata, embedding | ✅ Done   | FR-007, FR-008, TC-002 | Verified live by user; batch inserted with workspace_id isolation |
+| ST-4-7   | Update `documents.status` to `ingested` on success; `failed` on error                   | ✅ Done   | FR-006, NFR-005                 | Verified live by user; status and chunk_count updated atomically |
+| ST-4-8   | Document List UI component: shows all docs in active workspace with status badges        | ✅ Done   | FR-019                          | Verified live by user; UploadZone and DocumentList live on Dashboard |
 
 ---
 
@@ -136,15 +138,15 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-5-1   | Chat API route (POST `/api/chat`) — entry point for all RAG + tool-calling interactions  | ⬜ To Do  | FR-010, FR-011                  |       |
-| ST-5-2   | Embed user query with `text-embedding-004` (server-side)                                 | ⬜ To Do  | FR-010, INT-002                 |       |
-| ST-5-3   | Call `match_workspace_chunks` with workspace_id filter; retrieve top-5 chunks            | ⬜ To Do  | FR-010, NFR-003, TS-007         |       |
-| ST-5-4   | Build LLM system prompt: chunk context wrapped in `<context_documents workspace_id="...">` tags with injection-resistant instructions | ⬜ To Do | FR-011, NFR-002, TS-015 |  |
-| ST-5-5   | Gemini LLM call with retrieved context; grounded answer generation with citations        | ⬜ To Do  | FR-011, INT-001                 |       |
-| ST-5-6   | Honest refusal logic: if retrieval returns 0 chunks or all below threshold, return refusal message | ⬜ To Do | FR-012, TS-010         |       |
-| ST-5-7   | Persist chat messages to `chat_messages` table (user + assistant turns, with citations jsonb) | ⬜ To Do | FR-013                     |       |
-| ST-5-8   | Chat UI component: message list with citation badges; chat input with loading state      | ⬜ To Do  | FR-011, NFR-009                 |       |
-| ST-5-9   | Retrieval Debug Inspector: expandable panel per message showing chunks, similarity scores, workspace_id filter used | ⬜ To Do | FR-022, TS-007 |       |
+| ST-5-1   | Chat API route (POST `/api/chat`) — entry point for all RAG + tool-calling interactions  | 🔵 Testing | FR-010, FR-011              | Handles auth, validation, RAG pipeline, and turn persistence |
+| ST-5-2   | Embed user query with `gemini-embedding-001` (768-dim, server-side)                       | 🔵 Testing | FR-010, INT-002             | Uses calibrated 768-dim embedText via Gemini SDK |
+| ST-5-3   | Call `match_workspace_chunks` with workspace_id filter; retrieve top-5 chunks            | 🔵 Testing | FR-010, NFR-003, TS-007     | Supabase RPC vector search with threshold 0.35 |
+| ST-5-4   | Build LLM system prompt: chunk context wrapped in `<context_documents workspace_id="...">` tags with injection-resistant instructions | 🔵 Testing | FR-011, NFR-002, TS-015 | Hardened boundary tags and indirect prompt injection defense |
+| ST-5-5   | Gemini LLM call with retrieved context; grounded answer generation with citations        | 🔵 Testing | FR-011, INT-001             | Grounded answers via gemini-2.5-flash with low temperature (0.2) |
+| ST-5-6   | Honest refusal logic: if retrieval returns 0 chunks or all below threshold, return refusal message | 🔵 Testing | FR-012, TS-010     | Halts hallucination when no matching chunks are found |
+| ST-5-7   | Persist chat messages to `chat_messages` table (user + assistant turns, with citations jsonb) | 🔵 Testing | FR-013                 | Chronological chat persistence with GET/DELETE API |
+| ST-5-8   | Chat UI component: message list with citation badges; chat input with loading state      | 🔵 Testing | FR-011, NFR-009             | ChatContainer, ChatMessageItem, ChatInput mounted on Dashboard |
+| ST-5-9   | Retrieval Debug Inspector: expandable panel per message showing chunks, similarity scores, workspace_id filter used | 🔵 Testing | FR-022, TS-007 | Per-message debug inspector displaying latency, threshold, and SQL filter |
 
 ---
 
