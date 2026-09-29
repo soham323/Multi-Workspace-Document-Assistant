@@ -3,11 +3,11 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.2.0                                            |
+| **Version**   | 1.3.0                                            |
 | **Status**    | Active                                           |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 18:36 IST                             |
-| **Updated**   | 2026-09-29 20:08 IST                             |
+| **Updated**   | 2026-09-29 20:33 IST                             |
 | **Project**   | Multi-Workspace Document Assistant               |
 
 ---
@@ -16,6 +16,7 @@
 
 | Version | Date & Time          | Summary of Changes                                                                              |
 | :------ | :------------------- | :---------------------------------------------------------------------------------------------- |
+| 1.3.0   | 2026-09-29 20:33 IST | Stage 1 100% Done (All 6 tables active, HNSW index operational, match_workspace_chunks verified live, Supabase client helpers ready). Stage 2 next. |
 | 1.2.0   | 2026-09-29 20:08 IST | Stage 0 marked 100% Done (Supabase keys + pgvector verified, .env.local created, Gemini verified). ST-1-9 Done. supabase/schema.sql created. |
 | 1.1.0   | 2026-09-29 19:39 IST | ST-0-1 Done (Next.js init), ST-0-4 Done (.env.example), ST-0-5 Done (.gitignore); ST-0-6 In Progress |
 | 1.0.0   | 2026-09-29 18:36 IST | Initial STAGES.md created — 8 stages, 40 tasks drafted from TRD v1.0.0                        |
@@ -27,8 +28,8 @@
 | Metric         | Count |
 | :------------- | :---- |
 | Total Tasks    | 40    |
-| ✅ Done        | 7     |
-| 🟡 In Progress | 8     |
+| ✅ Done        | 15    |
+| 🟡 In Progress | 0     |
 | 🔵 Testing     | 0     |
 | 🔴 Blocked     | 0     |
 | ⬜ To Do       | 25    |
@@ -62,15 +63,16 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-1-1   | Create `workspaces` table (id, user_id, name, created_at)                                | 🟡 In Progress | FR-003                     | Ready in supabase/schema.sql |
-| ST-1-2   | Create `documents` table (id, workspace_id, title, file_type, file_hash, status, created_at) | 🟡 In Progress | FR-006, FR-009          | Ready in supabase/schema.sql (pdf, txt, docx) |
-| ST-1-3   | Create `document_chunks` table (id, workspace_id, document_id, content, metadata jsonb, embedding vector(768)) | 🟡 In Progress | TC-002, FR-007, FR-008 | Ready in supabase/schema.sql |
-| ST-1-4   | Create HNSW index on `document_chunks.embedding` for fast ANN search                     | 🟡 In Progress | TC-002, NFR-007            | Ready in supabase/schema.sql |
-| ST-1-5   | Create `match_workspace_chunks` SQL function (workspace-scoped cosine similarity search) | 🟡 In Progress | FR-010, NFR-003            | Ready in supabase/schema.sql |
-| ST-1-6   | Create `tasks` table (id, workspace_id, title, description, priority, status, created_at)| 🟡 In Progress | FR-016                     | Ready in supabase/schema.sql |
-| ST-1-7   | Create `chat_messages` table (id, workspace_id, role, content, citations jsonb, retrieval_debug jsonb, created_at) | 🟡 In Progress | FR-013 | Ready in supabase/schema.sql |
-| ST-1-8   | Create `tool_calls_log` table (id, workspace_id, tool_name, arguments jsonb, result jsonb, status, created_at) | 🟡 In Progress | FR-018 | Ready in supabase/schema.sql |
+| ST-1-1   | Create `workspaces` table (id, user_id, name, created_at)                                | ✅ Done   | FR-003                          | Verified live on Supabase |
+| ST-1-2   | Create `documents` table (id, workspace_id, title, file_type, file_hash, status, created_at) | ✅ Done   | FR-006, FR-009               | Verified live on Supabase (pdf, txt, docx) |
+| ST-1-3   | Create `document_chunks` table (id, workspace_id, document_id, content, metadata jsonb, embedding vector(768)) | ✅ Done   | TC-002, FR-007, FR-008 | Verified live on Supabase |
+| ST-1-4   | Create HNSW index on `document_chunks.embedding` for fast ANN search                     | ✅ Done   | TC-002, NFR-007                 | Configured via schema.sql |
+| ST-1-5   | Create `match_workspace_chunks` SQL function (workspace-scoped cosine similarity search) | ✅ Done   | FR-010, NFR-003                 | Verified live via automated RPC call |
+| ST-1-6   | Create `tasks` table (id, workspace_id, title, description, priority, status, created_at)| ✅ Done   | FR-016                          | Verified live on Supabase |
+| ST-1-7   | Create `chat_messages` table (id, workspace_id, role, content, citations jsonb, retrieval_debug jsonb, created_at) | ✅ Done   | FR-013 | Verified live on Supabase |
+| ST-1-8   | Create `tool_calls_log` table (id, workspace_id, tool_name, arguments jsonb, result jsonb, status, created_at) | ✅ Done   | FR-018 | Verified live on Supabase |
 | ST-1-9   | Create Supabase client helpers: `lib/supabase/client.ts` (anon, browser) and `lib/supabase/server.ts` (service role, server-only) | ✅ Done | NFR-001, TC-004 | Implemented and type-safe |
+
 
 
 ---
