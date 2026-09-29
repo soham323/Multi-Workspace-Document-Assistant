@@ -3,11 +3,11 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.3.0                                            |
+| **Version**   | 1.4.0                                            |
 | **Status**    | Active                                           |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 18:36 IST                             |
-| **Updated**   | 2026-09-29 20:33 IST                             |
+| **Updated**   | 2026-09-29 21:55 IST                             |
 | **Project**   | Multi-Workspace Document Assistant               |
 
 ---
@@ -16,6 +16,7 @@
 
 | Version | Date & Time          | Summary of Changes                                                                              |
 | :------ | :------------------- | :---------------------------------------------------------------------------------------------- |
+| 1.4.0   | 2026-09-29 21:55 IST | Stage 2 built (ST-2-1 to ST-2-5 in Testing). Sign-in, Sign-up, Sign-out, Dashboard layout, Header, and Middleware guard active. |
 | 1.3.0   | 2026-09-29 20:33 IST | Stage 1 100% Done (All 6 tables active, HNSW index operational, match_workspace_chunks verified live, Supabase client helpers ready). Stage 2 next. |
 | 1.2.0   | 2026-09-29 20:08 IST | Stage 0 marked 100% Done (Supabase keys + pgvector verified, .env.local created, Gemini verified). ST-1-9 Done. supabase/schema.sql created. |
 | 1.1.0   | 2026-09-29 19:39 IST | ST-0-1 Done (Next.js init), ST-0-4 Done (.env.example), ST-0-5 Done (.gitignore); ST-0-6 In Progress |
@@ -30,9 +31,9 @@
 | Total Tasks    | 40    |
 | ✅ Done        | 15    |
 | 🟡 In Progress | 0     |
-| 🔵 Testing     | 0     |
+| 🔵 Testing     | 5     |
 | 🔴 Blocked     | 0     |
-| ⬜ To Do       | 25    |
+| ⬜ To Do       | 20    |
 
 ---
 
@@ -73,8 +74,6 @@
 | ST-1-8   | Create `tool_calls_log` table (id, workspace_id, tool_name, arguments jsonb, result jsonb, status, created_at) | ✅ Done   | FR-018 | Verified live on Supabase |
 | ST-1-9   | Create Supabase client helpers: `lib/supabase/client.ts` (anon, browser) and `lib/supabase/server.ts` (service role, server-only) | ✅ Done | NFR-001, TC-004 | Implemented and type-safe |
 
-
-
 ---
 
 ### Stage 2: Authentication
@@ -84,11 +83,11 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-2-1   | Create `/app/(auth)/sign-in` page with email + password form                             | ⬜ To Do  | FR-001                          |       |
-| ST-2-2   | Create `/app/(auth)/sign-up` page with registration form and validation                  | ⬜ To Do  | FR-001                          |       |
-| ST-2-3   | Implement sign-out action and redirect to sign-in page                                   | ⬜ To Do  | FR-002                          |       |
-| ST-2-4   | Create Next.js middleware (`middleware.ts`) to guard all `/dashboard/*` routes           | ⬜ To Do  | FR-001, TS-003                  |       |
-| ST-2-5   | Display currently authenticated user's email in the dashboard nav/header                 | ⬜ To Do  | FR-001                          |       |
+| ST-2-1   | Create `/app/(auth)/sign-in` page with email + password form                             | 🔵 Testing | FR-001                          | Modern glassmorphic form built with Supabase Auth |
+| ST-2-2   | Create `/app/(auth)/sign-up` page with registration form and validation                  | 🔵 Testing | FR-001                          | Built with password matching & email verification feedback |
+| ST-2-3   | Implement sign-out action and redirect to sign-in page                                   | 🔵 Testing | FR-002                          | Built in Header component with session clearance |
+| ST-2-4   | Create Next.js middleware (`middleware.ts`) to guard all `/dashboard/*` routes           | 🔵 Testing | FR-001, TS-003                  | Protects /dashboard/* and redirects authenticated users from auth |
+| ST-2-5   | Display currently authenticated user's email in the dashboard nav/header                 | 🔵 Testing | FR-001                          | Active status indicator and email badge in Header |
 
 ---
 
