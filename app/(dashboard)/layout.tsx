@@ -1,8 +1,8 @@
-// app/(dashboard)/layout.tsx
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Header from "@/components/dashboard/Header";
+import { WorkspaceProvider } from "@/context/WorkspaceContext";
 
 export default async function DashboardLayout({
   children,
@@ -41,11 +41,14 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Header userEmail={user.email ?? "User"} />
-      <main style={{ flex: 1, padding: "32px 28px", maxWidth: "1280px", margin: "0 auto", width: "100%" }}>
-        {children}
-      </main>
-    </div>
+    <WorkspaceProvider>
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        <Header userEmail={user.email ?? "User"} />
+        <main style={{ flex: 1, padding: "32px 28px", maxWidth: "1280px", margin: "0 auto", width: "100%" }}>
+          {children}
+        </main>
+      </div>
+    </WorkspaceProvider>
   );
 }
+
