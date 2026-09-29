@@ -3,11 +3,11 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.5.0                                            |
+| **Version**   | 1.6.0                                            |
 | **Status**    | Active                                           |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 18:36 IST                             |
-| **Updated**   | 2026-09-29 23:05 IST                             |
+| **Updated**   | 2026-09-29 23:12 IST                             |
 | **Project**   | Multi-Workspace Document Assistant               |
 
 ---
@@ -16,6 +16,7 @@
 
 | Version | Date & Time          | Summary of Changes                                                                              |
 | :------ | :------------------- | :---------------------------------------------------------------------------------------------- |
+| 1.6.0   | 2026-09-29 23:12 IST | Stage 3 built (ST-3-1 to ST-3-5 in Testing). Workspace API routes, Context, Switcher dropdown, Modal, and dynamic dashboard views. |
 | 1.5.0   | 2026-09-29 23:05 IST | Stage 2 verified working by user and marked 100% Done (ST-2-1 to ST-2-5). Stage 3 In Progress. |
 | 1.4.0   | 2026-09-29 21:55 IST | Stage 2 built (ST-2-1 to ST-2-5 in Testing). Sign-in, Sign-up, Sign-out, Dashboard layout, Header, and Middleware guard active. |
 | 1.3.0   | 2026-09-29 20:33 IST | Stage 1 100% Done (All 6 tables active, HNSW index operational, match_workspace_chunks verified live, Supabase client helpers ready). Stage 2 next. |
@@ -32,9 +33,9 @@
 | Total Tasks    | 40    |
 | ✅ Done        | 20    |
 | 🟡 In Progress | 0     |
-| 🔵 Testing     | 0     |
+| 🔵 Testing     | 5     |
 | 🔴 Blocked     | 0     |
-| ⬜ To Do       | 20    |
+| ⬜ To Do       | 15    |
 
 ---
 
@@ -90,7 +91,6 @@
 | ST-2-4   | Create Next.js middleware (`middleware.ts`) to guard all `/dashboard/*` routes           | ✅ Done   | FR-001, TS-003                  | Verified live with HTTP 307 route guard |
 | ST-2-5   | Display currently authenticated user's email in the dashboard nav/header                 | ✅ Done   | FR-001                          | Verified live on Dashboard shell |
 
-
 ---
 
 ### Stage 3: Workspace Management
@@ -100,11 +100,11 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-3-1   | Workspace creation API route / server action (POST `/api/workspaces`)                    | ⬜ To Do  | FR-003                          |       |
-| ST-3-2   | Workspace list API route (GET `/api/workspaces`) — returns only workspaces for auth user | ⬜ To Do  | FR-003                          |       |
-| ST-3-3   | Active workspace state management (context or Zustand store, persisted in localStorage)  | ⬜ To Do  | FR-004                          |       |
-| ST-3-4   | Workspace Switcher UI component (sidebar or top nav, shows all workspaces, highlights active) | ⬜ To Do | FR-004                      |       |
-| ST-3-5   | Switching workspace updates all dashboard views (documents, chat, tasks, tool log)       | ⬜ To Do  | FR-004, FR-005, TS-004          |       |
+| ST-3-1   | Workspace creation API route / server action (POST `/api/workspaces`)                    | 🔵 Testing | FR-003                          | POST /api/workspaces with Zod validation |
+| ST-3-2   | Workspace list API route (GET `/api/workspaces`) — returns only workspaces for auth user | 🔵 Testing | FR-003                          | GET /api/workspaces ordered by newest |
+| ST-3-3   | Active workspace state management (context or Zustand store, persisted in localStorage)  | 🔵 Testing | FR-004                          | WorkspaceContext with localStorage persistence |
+| ST-3-4   | Workspace Switcher UI component (sidebar or top nav, shows all workspaces, highlights active) | 🔵 Testing | FR-004                      | Header dropdown + CreateWorkspaceModal |
+| ST-3-5   | Switching workspace updates all dashboard views (documents, chat, tasks, tool log)       | 🔵 Testing | FR-004, FR-005, TS-004          | DashboardContent reacts to active workspace |
 
 ---
 
