@@ -3,20 +3,21 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.0.0                                            |
+| **Version**   | 1.1.0                                            |
 | **Status**    | Active                                           |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 18:36 IST                             |
-| **Updated**   | 2026-09-29 18:36 IST                             |
+| **Updated**   | 2026-09-29 19:39 IST                             |
 | **Project**   | Multi-Workspace Document Assistant               |
 
 ---
 
 ## Update History
 
-| Version | Date & Time          | Summary of Changes                                                        |
-| :------ | :------------------- | :------------------------------------------------------------------------ |
-| 1.0.0   | 2026-09-29 18:36 IST | Initial STAGES.md created — 8 stages, 40 tasks drafted from TRD v1.0.0  |
+| Version | Date & Time          | Summary of Changes                                                                              |
+| :------ | :------------------- | :---------------------------------------------------------------------------------------------- |
+| 1.1.0   | 2026-09-29 19:39 IST | ST-0-1 Done (Next.js init), ST-0-4 Done (.env.example), ST-0-5 Done (.gitignore); ST-0-6 In Progress |
+| 1.0.0   | 2026-09-29 18:36 IST | Initial STAGES.md created — 8 stages, 40 tasks drafted from TRD v1.0.0                        |
 
 ---
 
@@ -25,11 +26,11 @@
 | Metric         | Count |
 | :------------- | :---- |
 | Total Tasks    | 40    |
-| ✅ Done        | 0     |
-| 🟡 In Progress | 0     |
+| ✅ Done        | 3     |
+| 🟡 In Progress | 1     |
 | 🔵 Testing     | 0     |
 | 🔴 Blocked     | 0     |
-| ⬜ To Do       | 40    |
+| ⬜ To Do       | 36    |
 
 ---
 
@@ -44,12 +45,12 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-0-1   | Initialize Next.js 15 project (TypeScript, App Router, ESLint, Prettier)                 | ⬜ To Do  | TC-003                          |       |
-| ST-0-2   | Create Supabase project (free tier, no credit card) and note URL + keys                  | ⬜ To Do  | TC-001, TC-003                  |       |
-| ST-0-3   | Enable `pgvector` extension in Supabase SQL editor                                        | ⬜ To Do  | TC-002, TC-003                  |       |
-| ST-0-4   | Create `.env.example` + `.env.local` with all required variable placeholders             | ⬜ To Do  | NFR-001, TC-005                 |       |
-| ST-0-5   | Add `.gitignore` (covers `.env.local`, `node_modules`, `.next`, build artifacts)         | ⬜ To Do  | TC-005, NFR-001                 |       |
-| ST-0-6   | Initialize Git repository and push initial commit to GitHub                               | ⬜ To Do  | TC-005                          |       |
+| ST-0-1   | Initialize Next.js 15 project (TypeScript, App Router, ESLint, Prettier)                 | ✅ Done      | TC-003                          | Scaffolded via create-next-app; moved to project root; tsc --noEmit clean |
+| ST-0-2   | Create Supabase project (free tier, no credit card) and note URL + keys                  | ⬜ To Do  | TC-001, TC-003                  | Waiting on user                |
+| ST-0-3   | Enable `pgvector` extension in Supabase SQL editor                                        | ⬜ To Do  | TC-002, TC-003                  | Waiting on user                |
+| ST-0-4   | Create `.env.example` + `.env.local` with all required variable placeholders             | ✅ Done      | NFR-001, TC-005                 | .env.example committed; .env.local in .gitignore |
+| ST-0-5   | Add `.gitignore` (covers `.env.local`, `node_modules`, `.next`, build artifacts)         | ✅ Done      | TC-005, NFR-001                 | Comprehensive .gitignore written |
+| ST-0-6   | Initialize Git repository and push initial commit to GitHub                               | 🟡 In Progress | TC-005                       | Repo exists; committing scaffold now |
 
 ---
 
