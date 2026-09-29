@@ -4,10 +4,13 @@
 import { useState } from "react";
 import { useWorkspace } from "@/context/WorkspaceContext";
 import CreateWorkspaceModal from "@/components/workspace/CreateWorkspaceModal";
+import UploadZone from "@/components/documents/UploadZone";
+import DocumentList from "@/components/documents/DocumentList";
 
 export default function DashboardContent({ userEmail }: { userEmail: string }) {
   const { workspaces, activeWorkspace, loading } = useWorkspace();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refreshDocsTrigger, setRefreshDocsTrigger] = useState(0);
 
   if (loading) {
     return (
@@ -199,23 +202,24 @@ export default function DashboardContent({ userEmail }: { userEmail: string }) {
           gap: "20px",
         }}
       >
-        {/* Stage 4: Documents Card */}
-        <div className="glass-panel" style={{ padding: "24px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+        {/* Stage 4: Documents & Ingestion Section */}
+        <div className="glass-panel" style={{ padding: "28px", display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <div
               style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "10px",
+                width: "40px",
+                height: "40px",
+                borderRadius: "12px",
                 background: "rgba(16, 185, 129, 0.15)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                border: "1px solid rgba(16, 185, 129, 0.3)",
               }}
             >
               <svg
-                width="18"
-                height="18"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="#34d399"
@@ -228,28 +232,28 @@ export default function DashboardContent({ userEmail }: { userEmail: string }) {
               </svg>
             </div>
             <div>
-              <h3 style={{ fontSize: "16px", fontWeight: "600", color: "var(--text-primary)" }}>
-                Documents & Vector Store
+              <h3 style={{ fontSize: "18px", fontWeight: "700", color: "var(--text-primary)" }}>
+                Workspace Knowledge Base
               </h3>
-              <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Stage 4 Ingestion</span>
+              <p style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
+                Documents uploaded here are chunked, embedded into 768-dimensional vectors with Gemini, and strictly isolated to this workspace.
+              </p>
             </div>
           </div>
-          <p style={{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.5", marginBottom: "16px" }}>
-            Upload PDF, TXT, and DOCX files. Chunks are embedded via Gemini 768-dim embeddings and tagged with <code>{activeWorkspace?.id?.slice(0, 8)}...</code>.
-          </p>
-          <div
-            style={{
-              padding: "16px",
-              borderRadius: "var(--radius-md)",
-              border: "1px dashed var(--border-subtle)",
-              background: "rgba(0, 0, 0, 0.2)",
-              textAlign: "center",
-              fontSize: "13px",
-              color: "var(--text-muted)",
-            }}
-          >
-            Stage 4 Document Upload Pipeline ready to be unlocked
-          </div>
+
+          {activeWorkspace && (
+            <>
+              <UploadZone
+                workspaceId={activeWorkspace.id}
+                onUploadSuccess={() => setRefreshDocsTrigger((prev) => prev + 1)}
+              />
+              <DocumentList
+                workspaceId={activeWorkspace.id}
+                refreshTrigger={refreshDocsTrigger}
+                onDocumentDeleted={() => setRefreshDocsTrigger((prev) => prev + 1)}
+              />
+            </>
+          )}
         </div>
 
         {/* Stage 5: RAG Chat Card */}

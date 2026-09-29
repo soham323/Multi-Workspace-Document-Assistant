@@ -3,11 +3,11 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.7.0                                            |
+| **Version**   | 1.8.0                                            |
 | **Status**    | Active                                           |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 18:36 IST                             |
-| **Updated**   | 2026-09-29 23:22 IST                             |
+| **Updated**   | 2026-09-29 23:45 IST                             |
 | **Project**   | Multi-Workspace Document Assistant               |
 
 ---
@@ -16,6 +16,7 @@
 
 | Version | Date & Time          | Summary of Changes                                                                              |
 | :------ | :------------------- | :---------------------------------------------------------------------------------------------- |
+| 1.8.0   | 2026-09-29 23:45 IST | Stage 4 implemented (ST-4-1 to ST-4-8 in Testing). Ingestion pipeline (upload route, SHA-256 idempotency, extractors, chunker, Gemini 768-dim embeddings, DB chunk insert), UploadZone and DocumentList UI mounted in Dashboard. |
 | 1.7.0   | 2026-09-29 23:22 IST | Stage 3 marked 100% Done (ST-3-1 to ST-3-5 verified live by user). Stage 4 In Progress.        |
 | 1.6.0   | 2026-09-29 23:12 IST | Stage 3 built (ST-3-1 to ST-3-5 in Testing). Workspace API routes, Context, Switcher dropdown, Modal, and dynamic dashboard views. |
 | 1.5.0   | 2026-09-29 23:05 IST | Stage 2 verified working by user and marked 100% Done (ST-2-1 to ST-2-5). Stage 3 In Progress. |
@@ -31,12 +32,12 @@
 
 | Metric         | Count |
 | :------------- | :---- |
-| Total Tasks    | 40    |
+| Total Tasks    | 65    |
 | ✅ Done        | 25    |
 | 🟡 In Progress | 0     |
-| 🔵 Testing     | 0     |
+| 🔵 Testing     | 8     |
 | 🔴 Blocked     | 0     |
-| ⬜ To Do       | 15    |
+| ⬜ To Do       | 32    |
 
 ---
 
@@ -117,14 +118,14 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-4-1   | File upload API route (POST `/api/documents/upload`) — accepts PDF, TXT; validates size ≤10 MB | ⬜ To Do | FR-006                    |       |
-| ST-4-2   | SHA-256 hash computation on upload; duplicate detection against `documents.file_hash`    | ⬜ To Do  | FR-009, NFR-006, TS-006         |       |
-| ST-4-3   | Text extraction: PDF parsing (`pdf-parse` or `pdfjs-dist`), plain text pass-through      | ⬜ To Do  | FR-006                          |       |
-| ST-4-4   | Text chunking: recursive character splitter (200–600 tokens, 50-token overlap)           | ⬜ To Do  | FR-007                          |       |
-| ST-4-5   | Gemini `text-embedding-004` integration — batch embed all chunks (server-side only)      | ⬜ To Do  | FR-008, NFR-001, INT-002        |       |
-| ST-4-6   | Store chunk records in `document_chunks` with workspace_id, document_id, content, metadata, embedding | ⬜ To Do | FR-007, FR-008, TC-002 |   |
-| ST-4-7   | Update `documents.status` to `ingested` on success; `failed` on error                   | ⬜ To Do  | FR-006, NFR-005                 |       |
-| ST-4-8   | Document List UI component: shows all docs in active workspace with status badges        | ⬜ To Do  | FR-019                          |       |
+| ST-4-1   | File upload API route (POST `/api/documents/upload`) — accepts PDF, TXT, DOCX; validates size ≤10 MB | 🔵 Testing | FR-006                    | Accepts multipart form data, enforces ≤10MB size limit and file extension guard |
+| ST-4-2   | SHA-256 hash computation on upload; duplicate detection against `documents.file_hash`    | 🔵 Testing | FR-009, NFR-006, TS-006         | Computes SHA-256 hash, queries workspace documents, returns HTTP 409 on duplicate |
+| ST-4-3   | Text extraction: PDF parsing (`pdf-parse`), plain text pass-through, DOCX parsing (`mammoth`) | 🔵 Testing | FR-006                          | Modular extractors in `lib/ingestion/extractor.ts` with whitespace cleaning |
+| ST-4-4   | Text chunking: recursive character splitter (200–600 tokens, 50-token overlap)           | 🔵 Testing | FR-007                          | Implemented in `lib/ingestion/chunker.ts` preserving document metadata |
+| ST-4-5   | Gemini `gemini-embedding-001` (768-dim) integration — batch embed all chunks (server-side only) | 🔵 Testing | FR-008, NFR-001, INT-002        | Batch embedding runner in `lib/ingestion/embedder.ts` using calibrated 768-dim model |
+| ST-4-6   | Store chunk records in `document_chunks` with workspace_id, document_id, content, metadata, embedding | 🔵 Testing | FR-007, FR-008, TC-002 | Inserted in batches of 50 chunks with strict workspace_id tagging |
+| ST-4-7   | Update `documents.status` to `ingested` on success; `failed` on error                   | 🔵 Testing | FR-006, NFR-005                 | Atomic status transition to `ingested` with chunk_count, or `failed` on catch |
+| ST-4-8   | Document List UI component: shows all docs in active workspace with status badges        | 🔵 Testing | FR-019                          | `UploadZone.tsx` and `DocumentList.tsx` mounted live in `DashboardContent.tsx` |
 
 ---
 
