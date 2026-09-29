@@ -3,11 +3,11 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.1.0                                            |
+| **Version**   | 1.2.0                                            |
 | **Status**    | Active                                           |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 18:36 IST                             |
-| **Updated**   | 2026-09-29 19:39 IST                             |
+| **Updated**   | 2026-09-29 20:08 IST                             |
 | **Project**   | Multi-Workspace Document Assistant               |
 
 ---
@@ -16,6 +16,7 @@
 
 | Version | Date & Time          | Summary of Changes                                                                              |
 | :------ | :------------------- | :---------------------------------------------------------------------------------------------- |
+| 1.2.0   | 2026-09-29 20:08 IST | Stage 0 marked 100% Done (Supabase keys + pgvector verified, .env.local created, Gemini verified). ST-1-9 Done. supabase/schema.sql created. |
 | 1.1.0   | 2026-09-29 19:39 IST | ST-0-1 Done (Next.js init), ST-0-4 Done (.env.example), ST-0-5 Done (.gitignore); ST-0-6 In Progress |
 | 1.0.0   | 2026-09-29 18:36 IST | Initial STAGES.md created — 8 stages, 40 tasks drafted from TRD v1.0.0                        |
 
@@ -26,11 +27,11 @@
 | Metric         | Count |
 | :------------- | :---- |
 | Total Tasks    | 40    |
-| ✅ Done        | 3     |
-| 🟡 In Progress | 1     |
+| ✅ Done        | 7     |
+| 🟡 In Progress | 8     |
 | 🔵 Testing     | 0     |
 | 🔴 Blocked     | 0     |
-| ⬜ To Do       | 36    |
+| ⬜ To Do       | 25    |
 
 ---
 
@@ -46,11 +47,11 @@
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
 | ST-0-1   | Initialize Next.js 15 project (TypeScript, App Router, ESLint, Prettier)                 | ✅ Done      | TC-003                          | Scaffolded via create-next-app; moved to project root; tsc --noEmit clean |
-| ST-0-2   | Create Supabase project (free tier, no credit card) and note URL + keys                  | ⬜ To Do  | TC-001, TC-003                  | Waiting on user                |
-| ST-0-3   | Enable `pgvector` extension in Supabase SQL editor                                        | ⬜ To Do  | TC-002, TC-003                  | Waiting on user                |
-| ST-0-4   | Create `.env.example` + `.env.local` with all required variable placeholders             | ✅ Done      | NFR-001, TC-005                 | .env.example committed; .env.local in .gitignore |
-| ST-0-5   | Add `.gitignore` (covers `.env.local`, `node_modules`, `.next`, build artifacts)         | ✅ Done      | TC-005, NFR-001                 | Comprehensive .gitignore written |
-| ST-0-6   | Initialize Git repository and push initial commit to GitHub                               | 🟡 In Progress | TC-005                       | Repo exists; committing scaffold now |
+| ST-0-2   | Create Supabase project (free tier, no credit card) and note URL + keys                  | ✅ Done      | TC-001, TC-003                  | Credentials supplied and verified |
+| ST-0-3   | Enable `pgvector` extension in Supabase SQL editor                                        | ✅ Done      | TC-002, TC-003                  | Verified enabled |
+| ST-0-4   | Create `.env.example` + `.env.local` with all required variable placeholders             | ✅ Done      | NFR-001, TC-005                 | .env.example committed; .env.local created & gitignored |
+| ST-0-5   | Add `.gitignore` (covers `.env.local`, `node_modules`, `.next`, build artifacts)         | ✅ Done      | TC-005, NFR-001                 | Comprehensive .gitignore configured |
+| ST-0-6   | Initialize Git repository and push initial commit to GitHub                               | ✅ Done      | TC-005                          | Branch feat/stage-0 created and scaffold committed |
 
 ---
 
@@ -61,15 +62,16 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-1-1   | Create `workspaces` table (id, user_id, name, created_at)                                | ⬜ To Do  | FR-003                          |       |
-| ST-1-2   | Create `documents` table (id, workspace_id, title, file_type, file_hash, status, created_at) | ⬜ To Do | FR-006, FR-009               |       |
-| ST-1-3   | Create `document_chunks` table (id, workspace_id, document_id, content, metadata jsonb, embedding vector(768)) | ⬜ To Do | TC-002, FR-007, FR-008 |  |
-| ST-1-4   | Create HNSW index on `document_chunks.embedding` for fast ANN search                     | ⬜ To Do  | TC-002, NFR-007                 |       |
-| ST-1-5   | Create `match_workspace_chunks` SQL function (workspace-scoped cosine similarity search) | ⬜ To Do  | FR-010, NFR-003                 |       |
-| ST-1-6   | Create `tasks` table (id, workspace_id, title, description, priority, status, created_at)| ⬜ To Do  | FR-016                          |       |
-| ST-1-7   | Create `chat_messages` table (id, workspace_id, role, content, citations jsonb, retrieval_debug jsonb, created_at) | ⬜ To Do | FR-013 |   |
-| ST-1-8   | Create `tool_calls_log` table (id, workspace_id, tool_name, arguments jsonb, result jsonb, status, created_at) | ⬜ To Do | FR-018 |    |
-| ST-1-9   | Create Supabase client helpers: `lib/supabase/client.ts` (anon, browser) and `lib/supabase/server.ts` (service role, server-only) | ⬜ To Do | NFR-001, TC-004 | |
+| ST-1-1   | Create `workspaces` table (id, user_id, name, created_at)                                | 🟡 In Progress | FR-003                     | Ready in supabase/schema.sql |
+| ST-1-2   | Create `documents` table (id, workspace_id, title, file_type, file_hash, status, created_at) | 🟡 In Progress | FR-006, FR-009          | Ready in supabase/schema.sql (pdf, txt, docx) |
+| ST-1-3   | Create `document_chunks` table (id, workspace_id, document_id, content, metadata jsonb, embedding vector(768)) | 🟡 In Progress | TC-002, FR-007, FR-008 | Ready in supabase/schema.sql |
+| ST-1-4   | Create HNSW index on `document_chunks.embedding` for fast ANN search                     | 🟡 In Progress | TC-002, NFR-007            | Ready in supabase/schema.sql |
+| ST-1-5   | Create `match_workspace_chunks` SQL function (workspace-scoped cosine similarity search) | 🟡 In Progress | FR-010, NFR-003            | Ready in supabase/schema.sql |
+| ST-1-6   | Create `tasks` table (id, workspace_id, title, description, priority, status, created_at)| 🟡 In Progress | FR-016                     | Ready in supabase/schema.sql |
+| ST-1-7   | Create `chat_messages` table (id, workspace_id, role, content, citations jsonb, retrieval_debug jsonb, created_at) | 🟡 In Progress | FR-013 | Ready in supabase/schema.sql |
+| ST-1-8   | Create `tool_calls_log` table (id, workspace_id, tool_name, arguments jsonb, result jsonb, status, created_at) | 🟡 In Progress | FR-018 | Ready in supabase/schema.sql |
+| ST-1-9   | Create Supabase client helpers: `lib/supabase/client.ts` (anon, browser) and `lib/supabase/server.ts` (service role, server-only) | ✅ Done | NFR-001, TC-004 | Implemented and type-safe |
+
 
 ---
 

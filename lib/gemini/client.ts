@@ -11,6 +11,7 @@ if (!process.env.GEMINI_API_KEY) {
 export const geminiClient = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Model identifiers — change here to upgrade models globally
-export const CHAT_MODEL = "gemini-2.0-flash";
-export const EMBEDDING_MODEL = "text-embedding-004";
+export const CHAT_MODEL = process.env.GEMINI_CHAT_MODEL || "gemini-2.5-flash";
+export const EMBEDDING_MODEL = process.env.GEMINI_EMBEDDING_MODEL || "gemini-embedding-001";
 export const EMBEDDING_DIMENSIONS = 768;
+

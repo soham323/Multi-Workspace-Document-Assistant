@@ -1,8 +1,5 @@
-// lib/gemini/embeddings.ts
-// Generates text embeddings using Gemini text-embedding-004 (768 dimensions).
-// All embedding calls are server-side only.
-
-import { geminiClient, EMBEDDING_MODEL } from "./client";
+import { geminiClient, EMBEDDING_MODEL, EMBEDDING_DIMENSIONS } from "./client";
+import type { EmbedContentRequest } from "@google/generative-ai";
 
 /**
  * Embed a single text string.
@@ -10,7 +7,11 @@ import { geminiClient, EMBEDDING_MODEL } from "./client";
  */
 export async function embedText(text: string): Promise<number[]> {
   const model = geminiClient.getGenerativeModel({ model: EMBEDDING_MODEL });
-  const result = await model.embedContent(text);
+  const request = {
+    content: { parts: [{ text }], role: "user" },
+    outputDimensionality: EMBEDDING_DIMENSIONS,
+  } as unknown as EmbedContentRequest;
+  const result = await model.embedContent(request);
   return result.embedding.values;
 }
 
@@ -28,14 +29,17 @@ export async function embedBatch(texts: string[]): Promise<number[][]> {
 
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
     const batch = texts.slice(i, i + BATCH_SIZE);
-    const batchResult = await model.batchEmbedContents({
-      requests: batch.map((text) => ({
-        model: `models/${EMBEDDING_MODEL}`,
-        content: { parts: [{ text }], role: "user" },
-      })),
-    });
+    const requests = batch.map((text) => ({
+      model: `models/${EMBEDDING_MODEL}`,
+      content: { parts: [{ text }], role: "user" },
+      outputDimensionality: EMBEDDING_DIMENSIONS,
+    })) as unknown as EmbedContentRequest[];
+
+    const batchResult = await model.batchEmbedContents({ requests });
     results.push(...batchResult.embeddings.map((e) => e.values));
   }
 
   return results;
 }
+
+
