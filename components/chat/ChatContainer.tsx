@@ -9,6 +9,7 @@ import ChatInput from "./ChatInput";
 interface ChatContainerProps {
   workspaceId: string;
   workspaceName?: string;
+  onToolCallExecuted?: () => void;
 }
 
 const SUGGESTED_PROMPTS = [
@@ -17,7 +18,11 @@ const SUGGESTED_PROMPTS = [
   "List any recommendations, conclusions, or next steps found.",
 ];
 
-export default function ChatContainer({ workspaceId, workspaceName }: ChatContainerProps) {
+export default function ChatContainer({
+  workspaceId,
+  workspaceName,
+  onToolCallExecuted,
+}: ChatContainerProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -111,6 +116,11 @@ export default function ChatContainer({ workspaceId, workspaceName }: ChatContai
       };
 
       setMessages((prev) => [...prev, assistantMsg]);
+
+      // Notify parent to refresh TaskList and ToolCallLogList
+      if (data.toolCallsMade && data.toolCallsMade.length > 0 && onToolCallExecuted) {
+        onToolCallExecuted();
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Network error during chat.";
       setError(msg);
