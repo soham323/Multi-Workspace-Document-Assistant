@@ -1,21 +1,25 @@
 /* app/globals.css */
-/* Modern Dark-Themed Glassmorphic Design System */
+/* Modern Dark-Themed Glassmorphic Design System with Ambient Lighting */
 
 :root {
-  --bg-primary: #0a0d14;
-  --bg-secondary: #0f1422;
-  --bg-card: rgba(17, 24, 39, 0.75);
-  --bg-card-hover: rgba(24, 33, 53, 0.85);
-  --bg-input: rgba(15, 23, 42, 0.65);
+  --bg-primary: #080a11;
+  --bg-secondary: #0d121f;
+  --bg-card: rgba(15, 21, 37, 0.78);
+  --bg-card-hover: rgba(22, 31, 54, 0.9);
+  --bg-input: rgba(12, 17, 30, 0.85);
 
   --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-focus: rgba(99, 102, 241, 0.6);
+  --border-glow: rgba(99, 102, 241, 0.3);
+  --border-focus: rgba(99, 102, 241, 0.65);
   --border-active: #6366f1;
 
   --accent-primary: #6366f1;
   --accent-primary-hover: #4f46e5;
   --accent-secondary: #8b5cf6;
-  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  --accent-cyan: #38bdf8;
+  --accent-emerald: #10b981;
+  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #38bdf8 50%, #818cf8 100%);
+  --accent-gradient-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(56, 189, 248, 0.15) 100%);
   --accent-glow: 0 0 25px rgba(99, 102, 241, 0.35);
 
   --text-primary: #f8fafc;
@@ -37,10 +41,11 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
 
-  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 1px 1px var(--border-subtle);
-  --shadow-glow: 0 0 20px -3px rgba(99, 102, 241, 0.25);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.55), 0 0 1px 1px var(--border-subtle);
+  --shadow-glow: 0 0 20px -3px rgba(99, 102, 241, 0.3);
 }
 
 * {
@@ -63,6 +68,11 @@ body {
 body {
   display: flex;
   flex-direction: column;
+  background-image: 
+    radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.12) 0px, transparent 40%),
+    radial-gradient(circle at 90% 15%, rgba(56, 189, 248, 0.09) 0px, transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(139, 92, 246, 0.08) 0px, transparent 50%);
+  background-attachment: fixed;
 }
 
 a {
@@ -70,14 +80,56 @@ a {
   text-decoration: none;
 }
 
+/* Global scrollbars — eradicates native Windows ugly arrow buttons */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Chat textarea specific scrollbar reset */
+.chat-textarea {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.chat-textarea::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.chat-textarea::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 /* Glassmorphic Container Utility */
 .glass-panel {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 /* Input Fields */
@@ -124,7 +176,7 @@ a {
 .btn-primary:hover:not(:disabled) {
   opacity: 0.95;
   transform: translateY(-1px);
-  box-shadow: var(--accent-glow);
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.45);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -146,7 +198,7 @@ a {
   padding: 10px 18px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -155,8 +207,9 @@ a {
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--text-primary);
 }
 
 /* Alert Boxes */
@@ -192,5 +245,16 @@ a {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

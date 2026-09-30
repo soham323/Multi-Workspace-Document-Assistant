@@ -82,18 +82,18 @@ export default function ChatInput({
           gap: "10px",
           background: "var(--bg-input)",
           border: "1px solid var(--border-subtle)",
-          borderRadius: "var(--radius-lg)",
-          padding: "8px 12px",
+          borderRadius: "14px",
+          padding: "6px 8px 6px 14px",
           transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.25)",
         }}
         onFocus={(e) => {
           e.currentTarget.style.borderColor = "var(--border-focus)";
-          e.currentTarget.style.boxShadow = "0 0 0 3px rgba(99, 102, 241, 0.2)";
+          e.currentTarget.style.boxShadow = "0 0 0 3px rgba(99, 102, 241, 0.25)";
         }}
         onBlur={(e) => {
           e.currentTarget.style.borderColor = "var(--border-subtle)";
-          e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.2)";
+          e.currentTarget.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.25)";
         }}
       >
         <textarea
@@ -104,6 +104,7 @@ export default function ChatInput({
           placeholder="Ask a question about your workspace documents (e.g. 'Summarize key points', 'What are the main findings?')..."
           disabled={disabled}
           rows={1}
+          className="chat-textarea"
           style={{
             flex: 1,
             background: "transparent",
@@ -112,8 +113,9 @@ export default function ChatInput({
             color: "var(--text-primary)",
             fontSize: "14px",
             resize: "none",
-            maxHeight: "160px",
-            padding: "6px 4px",
+            overflowY: input.split("\n").length > 2 ? "auto" : "hidden",
+            maxHeight: "140px",
+            padding: "8px 0",
             lineHeight: "1.5",
             fontFamily: "inherit",
           }}
@@ -130,14 +132,16 @@ export default function ChatInput({
             height: "36px",
             borderRadius: "10px",
             background: disabled || !input.trim()
-              ? "rgba(255, 255, 255, 0.08)"
-              : "var(--accent-gradient)",
-            border: "none",
-            color: "#ffffff",
+              ? "rgba(255, 255, 255, 0.05)"
+              : "linear-gradient(135deg, #6366f1, #38bdf8)",
+            border: disabled || !input.trim() ? "1px solid rgba(255, 255, 255, 0.08)" : "none",
+            color: disabled || !input.trim() ? "var(--text-muted)" : "#ffffff",
             cursor: disabled || !input.trim() ? "not-allowed" : "pointer",
             flexShrink: 0,
-            transition: "all 0.2s ease",
-            boxShadow: disabled || !input.trim() ? "none" : "var(--shadow-glow)",
+            marginBottom: "2px",
+            alignSelf: "flex-end",
+            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+            boxShadow: disabled || !input.trim() ? "none" : "0 0 16px rgba(99, 102, 241, 0.4)",
           }}
           title={disabled ? "Generating answer..." : "Send question (Enter)"}
         >
@@ -153,6 +157,7 @@ export default function ChatInput({
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
+              style={{ transform: "translateX(1px)" }}
             >
               <line x1="22" y1="2" x2="11" y2="13" />
               <polygon points="22 2 15 22 11 13 2 9 22 2" />

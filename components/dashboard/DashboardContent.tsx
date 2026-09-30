@@ -128,24 +128,126 @@ export default function DashboardContent({ userEmail }: { userEmail: string }) {
 
   // ─── Active Workspace View ────────────────────────────────────────────────
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      {/* 2-Line Hero Info & Architecture Overview Banner */}
+      <div
+        className="glass-panel"
+        style={{
+          padding: "20px 24px",
+          background: "linear-gradient(135deg, rgba(20, 26, 45, 0.85) 0%, rgba(12, 17, 30, 0.95) 100%)",
+          border: "1px solid rgba(99, 102, 241, 0.25)",
+          boxShadow: "0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.08)",
+          borderRadius: "var(--radius-xl)",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "12px",
+            marginBottom: "12px",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                background: "#38bdf8",
+                boxShadow: "0 0 10px #38bdf8",
+                display: "inline-block",
+              }}
+            />
+            <span
+              style={{
+                fontSize: "12px",
+                fontWeight: "700",
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                color: "#38bdf8",
+              }}
+            >
+              DocuAssistant Intelligence Engine &bull; Gemini 2.5 + pgvector RAG
+            </span>
+          </div>
+
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <span
+              style={{
+                padding: "3px 10px",
+                borderRadius: "var(--radius-full)",
+                fontSize: "11px",
+                fontWeight: "600",
+                background: "rgba(16, 185, 129, 0.12)",
+                color: "#6ee7b7",
+                border: "1px solid rgba(16, 185, 129, 0.25)",
+              }}
+            >
+              1. Ingest Knowledge
+            </span>
+            <span
+              style={{
+                padding: "3px 10px",
+                borderRadius: "var(--radius-full)",
+                fontSize: "11px",
+                fontWeight: "600",
+                background: "rgba(99, 102, 241, 0.12)",
+                color: "#a5b4fc",
+                border: "1px solid rgba(99, 102, 241, 0.25)",
+              }}
+            >
+              2. Grounded Vector Q&amp;A
+            </span>
+            <span
+              style={{
+                padding: "3px 10px",
+                borderRadius: "var(--radius-full)",
+                fontSize: "11px",
+                fontWeight: "600",
+                background: "rgba(245, 158, 11, 0.12)",
+                color: "#fcd34d",
+                border: "1px solid rgba(245, 158, 11, 0.25)",
+              }}
+            >
+              3. Automated Tools (Tasks &amp; Discord)
+            </span>
+          </div>
+        </div>
+
+        {/* 2-Line Clear Info: What is the tool & How to use it */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          <p style={{ fontSize: "14px", color: "var(--text-primary)", lineHeight: "1.5", margin: 0 }}>
+            <strong style={{ color: "#818cf8" }}>What is this:</strong> A multi-tenant workspace assistant that ingests PDF, DOCX, and TXT files, extracts recursive text chunks, and performs high-speed semantic retrieval with strict tenant data isolation.
+          </p>
+          <p style={{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.5", margin: 0 }}>
+            <strong style={{ color: "#38bdf8" }}>How to use:</strong> Upload documents on the left to build this workspace&apos;s vector index &bull; ask questions in the chat for grounded answers with verified citations &bull; or prompt the assistant in natural language to create workspace tasks and post Discord notifications.
+          </p>
+        </div>
+      </div>
+
       {/* Active Workspace Banner */}
       <div
         className="glass-panel"
         style={{
-          padding: "28px 32px",
-          background: "linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%)",
+          padding: "24px 28px",
+          background: "linear-gradient(135deg, rgba(22, 30, 52, 0.7) 0%, rgba(13, 18, 32, 0.85) 100%)",
+          border: "1px solid rgba(255, 255, 255, 0.09)",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
               <span
                 style={{
                   padding: "4px 10px",
                   borderRadius: "var(--radius-full)",
-                  fontSize: "12px",
-                  fontWeight: "600",
+                  fontSize: "11px",
+                  fontWeight: "700",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.03em",
                   background: "rgba(99, 102, 241, 0.15)",
                   color: "#818cf8",
                   border: "1px solid rgba(99, 102, 241, 0.3)",
@@ -153,23 +255,23 @@ export default function DashboardContent({ userEmail }: { userEmail: string }) {
               >
                 Active Workspace
               </span>
-              <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>
+              <span style={{ fontSize: "12px", color: "var(--text-muted)", fontFamily: "monospace" }}>
                 ID: {activeWorkspace?.id}
               </span>
             </div>
 
             <h1
               style={{
-                fontSize: "26px",
+                fontSize: "24px",
                 fontWeight: "700",
                 letterSpacing: "-0.02em",
                 color: "var(--text-primary)",
-                marginBottom: "6px",
+                marginBottom: "4px",
               }}
             >
               {activeWorkspace?.name}
             </h1>
-            <p style={{ fontSize: "14px", color: "var(--text-secondary)" }}>
+            <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0 }}>
               Created on {activeWorkspace ? new Date(activeWorkspace.created_at).toLocaleDateString() : ""} &bull; All document queries and vector searches are strictly isolated to this workspace.
             </p>
           </div>
@@ -177,12 +279,20 @@ export default function DashboardContent({ userEmail }: { userEmail: string }) {
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="btn-secondary"
-            style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px" }}
+            className="btn-primary"
+            style={{
+              width: "auto",
+              padding: "10px 18px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              fontSize: "13px",
+              borderRadius: "var(--radius-md)",
+            }}
           >
             <svg
-              width="14"
-              height="14"
+              width="15"
+              height="15"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -193,7 +303,7 @@ export default function DashboardContent({ userEmail }: { userEmail: string }) {
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            New Workspace
+            <span>New Workspace</span>
           </button>
         </div>
       </div>
