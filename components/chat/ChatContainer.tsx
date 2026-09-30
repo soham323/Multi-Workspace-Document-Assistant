@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import type { ChatMessage, ChatTurn } from "@/types/app";
 import ChatMessageItem from "./ChatMessageItem";
 import ChatInput from "./ChatInput";
+import ClearChatModal from "./ClearChatModal";
 
 interface ChatContainerProps {
   workspaceId: string;
@@ -27,6 +28,10 @@ export default function ChatContainer({
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [preservedInput, setPreservedInput] = useState<string | null>(null);
+  const [restoredText, setRestoredText] = useState<string | null>(null);
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false);
+  const [clearingHistory, setClearingHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -68,6 +73,7 @@ export default function ChatContainer({
     if (!text.trim() || loading) return;
 
     setError(null);
+    setPreservedInput(null);
 
     // Create optimistic user message
     const tempUserMsg: ChatMessage = {
@@ -124,17 +130,15 @@ export default function ChatContainer({
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Network error during chat.";
       setError(msg);
+      setPreservedInput(text); // Preserve failed input so user does not lose it (NFR-005)
     } finally {
       setLoading(false);
     }
   };
 
-  const handleClearHistory = async () => {
-    if (!confirm("Are you sure you want to clear the chat history for this workspace?")) {
-      return;
-    }
-
+  const handleConfirmClearHistory = async () => {
     try {
+      setClearingHistory(true);
       const res = await fetch(`/api/chat/messages?workspaceId=${encodeURIComponent(workspaceId)}`, {
         method: "DELETE",
       });
@@ -145,9 +149,13 @@ export default function ChatContainer({
       }
 
       setMessages([]);
+      setIsClearModalOpen(false);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error clearing history.";
-      alert(msg);
+      setError(msg);
+      setIsClearModalOpen(false);
+    } finally {
+      setClearingHistory(false);
     }
   };
 
@@ -195,7 +203,7 @@ export default function ChatContainer({
         {messages.length > 0 && (
           <button
             type="button"
-            onClick={handleClearHistory}
+            onClick={() => setIsClearModalOpen(true)}
             className="btn-secondary"
             style={{
               padding: "5px 10px",
@@ -373,10 +381,67 @@ export default function ChatContainer({
           </div>
         )}
 
-        {/* Error notification in chat */}
+        {/* Error notification in chat with Input Preservation & Retry actions (NFR-005) */}
         {error && (
-          <div className="alert-error" style={{ margin: "8px 0", fontSize: "13px" }}>
-            {error}
+          <div
+            className="alert-error"
+            style={{
+              margin: "8px 0",
+              fontSize: "13px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "12px",
+              flexWrap: "wrap",
+            }}
+          >
+            <span>{error}</span>
+            {preservedInput && (
+              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const text = preservedInput;
+                    setPreservedInput(null);
+                    setError(null);
+                    handleSendMessage(text);
+                  }}
+                  style={{
+                    padding: "4px 10px",
+                    background: "rgba(239, 68, 68, 0.25)",
+                    border: "1px solid rgba(239, 68, 68, 0.4)",
+                    color: "#fca5a5",
+                    borderRadius: "6px",
+                    fontSize: "12px",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                  }}
+                  title="Retry sending this question"
+                >
+                  ↻ Retry
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRestoredText(preservedInput);
+                    setPreservedInput(null);
+                    setError(null);
+                  }}
+                  style={{
+                    padding: "4px 10px",
+                    background: "rgba(255, 255, 255, 0.1)",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
+                    color: "var(--text-primary)",
+                    borderRadius: "6px",
+                    fontSize: "12px",
+                    cursor: "pointer",
+                  }}
+                  title="Restore question to input box to edit"
+                >
+                  Restore to Input
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -391,8 +456,22 @@ export default function ChatContainer({
           background: "rgba(15, 23, 42, 0.3)",
         }}
       >
-        <ChatInput onSendMessage={handleSendMessage} disabled={loading} />
+        <ChatInput
+          onSendMessage={handleSendMessage}
+          disabled={loading}
+          restoredValue={restoredText}
+          onRestoredConsumed={() => setRestoredText(null)}
+        />
       </div>
+
+      {/* Clear Chat Confirmation Modal */}
+      <ClearChatModal
+        isOpen={isClearModalOpen}
+        workspaceName={workspaceName}
+        loading={clearingHistory}
+        onConfirm={handleConfirmClearHistory}
+        onClose={() => setIsClearModalOpen(false)}
+      />
     </div>
   );
 }

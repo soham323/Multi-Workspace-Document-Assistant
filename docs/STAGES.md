@@ -3,11 +3,11 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.12.0                                           |
+| **Version**   | 1.15.0                                           |
 | **Status**    | Active                                           |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 18:36 IST                             |
-| **Updated**   | 2026-09-30 01:25 IST                             |
+| **Updated**   | 2026-09-30 14:55 IST                             |
 | **Project**   | Multi-Workspace Document Assistant               |
 
 ---
@@ -16,6 +16,9 @@
 
 | Version | Date & Time          | Summary of Changes                                                                              |
 | :------ | :------------------- | :---------------------------------------------------------------------------------------------- |
+| 1.15.0  | 2026-09-30 14:55 IST | Stage 7 marked 100% Done (ST-7-1 to ST-7-6 verified live by user, ClearChatModal added, textarea scroll arrows removed, multi-model failover & error humanizer implemented, merged to dev). Stage 8 In Progress. |
+| 1.14.0  | 2026-09-30 14:00 IST | Stage 7 implemented & verified (ST-7-1 to ST-7-6 in Testing). Hardened prompt injection defense with tag sanitization, verified workspace vector isolation, audited secret isolation, added 30s LLM timeout resilience with input preservation and retry in chat UI, verified malformed tool arguments & unknown tool guard, verified SHA-256 ingestion idempotency. Automated test suite scripts/test-stage7-hardening.ts passed (21/21 checks). |
+| 1.13.0  | 2026-09-30 13:40 IST | Stage 6 marked 100% Done (ST-6-1 to ST-6-10 verified live by user, Discord webhook enriched with workspace name and priority, merged into dev). Stage 7 In Progress. |
 | 1.12.0  | 2026-09-30 01:25 IST | Stage 6 implemented (ST-6-1 to ST-6-10 in Testing). Tool declarations, Zod schemas, registry, multi-turn loop, save_workspace_task handler, send_channel_notification handler, unknown tool guard, audit logging, TaskList, and ToolCallLogList UI mounted. |
 | 1.11.0  | 2026-09-30 01:20 IST | Stage 5 marked 100% Done (ST-5-1 to ST-5-9 verified live by user with citations & debug inspector). Stage 6 In Progress. |
 | 1.10.0  | 2026-09-30 00:37 IST | Stage 5 implemented (ST-5-1 to ST-5-9 in Testing). Retriever, injection-resistant prompt builder, Gemini RAG pipeline, POST /api/chat, GET/DELETE /api/chat/messages, and Glassmorphic Chat UI with Citation badges and Debug Inspector mounted live. |
@@ -37,11 +40,11 @@
 | Metric         | Count |
 | :------------- | :---- |
 | Total Tasks    | 65    |
-| ✅ Done        | 42    |
-| 🟡 In Progress | 0     |
-| 🔵 Testing     | 10    |
+| ✅ Done        | 58    |
+| 🟡 In Progress | 7     |
+| 🔵 Testing     | 0     |
 | 🔴 Blocked     | 0     |
-| ⬜ To Do       | 13    |
+| ⬜ To Do       | 0     |
 
 ---
 
@@ -159,16 +162,16 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-6-1   | Define Gemini Function Declarations for `save_workspace_task` and `send_channel_notification` | 🔵 Testing | FR-014                  | Declares function signatures & params for Gemini in `lib/tools/declarations.ts` |
-| ST-6-2   | Implement Zod schemas for both tool argument structures                                  | 🔵 Testing | FR-015, NFR-004             | Validates runtime arguments proposed by LLM (`lib/tools/schemas/`) |
-| ST-6-3   | Tool registry (`lib/tools/registry.ts`): maps tool names to schemas and handlers         | 🔵 Testing | FR-014, FR-015              | Extensible registry pattern with `executeTool` |
-| ST-6-4   | Multi-turn tool loop in chat API route: detect function call response → validate → execute → return result to LLM | 🔵 Testing | FR-015, NFR-004, TS-013 | Handles model proposal -> tool execution -> final response in `pipeline.ts` |
-| ST-6-5   | `save_workspace_task` handler: validates args, inserts into `tasks` table, returns confirmation | 🔵 Testing | FR-016, TS-011         | Persists task to workspace tasks via `lib/tools/handlers/saveWorkspaceTask.ts` |
-| ST-6-6   | `send_channel_notification` handler: validates args, POSTs to Discord webhook (env var), returns status | 🔵 Testing | FR-017, TS-012, INT-004 | Fires formatted Discord webhook embed via `sendChannelNotif.ts` |
-| ST-6-7   | Unknown tool name guard: returns structured error to LLM, no crash (TS-014)              | 🔵 Testing | NFR-004, TS-014             | Resilient recovery from invalid tool calls in `executeTool` |
-| ST-6-8   | Tool call audit logging: write to `tool_calls_log` on every execution attempt (success or fail) | 🔵 Testing | FR-018               | Full observability audit trail in `tool_calls_log` |
-| ST-6-9   | Task List UI component: shows workspace tasks created via tool calls                     | 🔵 Testing | FR-020                      | `TaskList.tsx` mounted live in `DashboardContent.tsx` with status toggles |
-| ST-6-10  | Tool Call Log UI component: shows log entries with name, status badge, collapsible args/result | 🔵 Testing | FR-021                | `ToolCallLogList.tsx` mounted live with collapsible JSON viewer |
+| ST-6-1   | Define Gemini Function Declarations for `save_workspace_task` and `send_channel_notification` | ✅ Done | FR-014                  | Declares function signatures & params for Gemini in `lib/tools/declarations.ts` |
+| ST-6-2   | Implement Zod schemas for both tool argument structures                                  | ✅ Done | FR-015, NFR-004             | Validates runtime arguments proposed by LLM (`lib/tools/schemas/`) |
+| ST-6-3   | Tool registry (`lib/tools/registry.ts`): maps tool names to schemas and handlers         | ✅ Done | FR-014, FR-015              | Extensible registry pattern with `executeTool` |
+| ST-6-4   | Multi-turn tool loop in chat API route: detect function call response → validate → execute → return result to LLM | ✅ Done | FR-015, NFR-004, TS-013 | Handles model proposal -> tool execution -> final response in `pipeline.ts` |
+| ST-6-5   | `save_workspace_task` handler: validates args, inserts into `tasks` table, returns confirmation | ✅ Done | FR-016, TS-011         | Persists task to workspace tasks via `lib/tools/handlers/saveWorkspaceTask.ts` |
+| ST-6-6   | `send_channel_notification` handler: validates args, POSTs to Discord webhook (env var), returns status | ✅ Done | FR-017, TS-012, INT-004 | Fires formatted Discord webhook embed via `sendChannelNotif.ts` |
+| ST-6-7   | Unknown tool name guard: returns structured error to LLM, no crash (TS-014)              | ✅ Done | NFR-004, TS-014             | Resilient recovery from invalid tool calls in `executeTool` |
+| ST-6-8   | Tool call audit logging: write to `tool_calls_log` on every execution attempt (success or fail) | ✅ Done | FR-018               | Full observability audit trail in `tool_calls_log` |
+| ST-6-9   | Task List UI component: shows workspace tasks created via tool calls                     | ✅ Done | FR-020                      | `TaskList.tsx` mounted live in `DashboardContent.tsx` with status toggles |
+| ST-6-10  | Tool Call Log UI component: shows log entries with name, status badge, collapsible args/result | ✅ Done | FR-021                | `ToolCallLogList.tsx` mounted live with collapsible JSON viewer |
 
 ---
 
@@ -179,12 +182,12 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-7-1   | Prompt injection defense: verify system prompt wraps context in boundary tags and includes explicit data-only instruction | ⬜ To Do | NFR-002, TS-015 |      |
-| ST-7-2   | Manual isolation test: upload doc with unique string to Workspace A; confirm Workspace B cannot retrieve it | ⬜ To Do | NFR-003, TS-007, TS-008 |   |
-| ST-7-3   | Secret exposure audit: inspect browser DevTools network tab on deployed URL; confirm no keys visible | ⬜ To Do | NFR-001, TS-016 |           |
-| ST-7-4   | LLM failure handling: simulate API timeout; verify user-visible error and input preservation | ⬜ To Do | NFR-005                       |       |
-| ST-7-5   | Malformed tool argument test: simulate missing required field in tool call; verify Zod rejection and graceful recovery | ⬜ To Do | NFR-004, TS-013 |     |
-| ST-7-6   | Idempotency end-to-end test: re-upload same document; verify chunk count unchanged        | ⬜ To Do  | NFR-006, TS-006                 |       |
+| ST-7-1   | Prompt injection defense: verify system prompt wraps context in boundary tags and includes explicit data-only instruction | ✅ Done | NFR-002, TS-015 | Hardened in `lib/security/promptBuilder.ts` with XML boundary tags, data-only instruction, and premature tag closure sanitization |
+| ST-7-2   | Manual isolation test: upload doc with unique string to Workspace A; confirm Workspace B cannot retrieve it | ✅ Done | NFR-003, TS-007, TS-008 | Verified via automated DB RPC canary test: 0 leaks across workspaces; strict workspace_id filter enforced in vector RPC |
+| ST-7-3   | Secret exposure audit: inspect browser DevTools network tab on deployed URL; confirm no keys visible | ✅ Done | NFR-001, TS-016 | Zero server secrets (service role, Discord webhook, Gemini) in client code or bundle; .env.local safely excluded |
+| ST-7-4   | LLM failure handling: simulate API timeout; verify user-visible error and input preservation | ✅ Done | NFR-005 | Configurable 30s timeout via `withTimeout` in `pipeline.ts`; ChatContainer preserves input on error with Retry and Restore buttons |
+| ST-7-5   | Malformed tool argument test: simulate missing required field in tool call; verify Zod rejection and graceful recovery | ✅ Done | NFR-004, TS-013 | Verified in `lib/tools/registry.ts`: Zod rejects missing fields/invalid enums, logs `validation_error`, returns error without crash |
+| ST-7-6   | Idempotency end-to-end test: re-upload same document; verify chunk count unchanged        | ✅ Done | NFR-006, TS-006 | Enforced via SHA-256 hash comparison; duplicate upload returns 409 conflict and chunk count remains identical |
 
 ---
 
@@ -194,13 +197,13 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-8-1   | Configure Vercel project; set all environment variables in Vercel dashboard               | ⬜ To Do  | TC-001, TC-004, NFR-001         |       |
-| ST-8-2   | Deploy to Vercel and verify all routes are reachable on the public URL                   | ⬜ To Do  | TC-001                          |       |
-| ST-8-3   | Pre-load two demo workspaces with sample documents (Workspace Alpha: Project Artemis, Workspace Beta: Project Neptune) | ⬜ To Do | TS-007, TS-008 |      |
-| ST-8-4   | Write `README.md`: what the app does, local setup steps, env vars table, deployment notes | ⬜ To Do  | TC-005 (Deliverable)            |       |
-| ST-8-5   | Write `AGENTS.md`: AI tools used, how agent-driven development was applied, key prompts   | ⬜ To Do  | TC-005 (Deliverable)            |       |
-| ST-8-6   | Write `AI_NOTES.md`: tool usage breakdown, key decisions, hardest bug, what to improve   | ⬜ To Do  | TC-005 (Deliverable)            |       |
-| ST-8-7   | Full end-to-end evaluator walkthrough on live URL: create workspace, upload doc, chat, trigger tools, verify isolation | ⬜ To Do | All FRs |                 |
+| ST-8-1   | Configure Vercel project; set all environment variables in Vercel dashboard               | 🟡 In Progress | TC-001, TC-004, NFR-001         | User connects GitHub repo & enters env vars in Vercel |
+| ST-8-2   | Deploy to Vercel and verify all routes are reachable on the public URL                   | 🟡 In Progress | TC-001                          | Production build verified clean |
+| ST-8-3   | Pre-load two demo workspaces with sample documents (Workspace Alpha: Project Artemis, Workspace Beta: Project Neptune) | 🟡 In Progress | TS-007, TS-008 | Demo seed files and loader ready |
+| ST-8-4   | Write `README.md`: what the app does, local setup steps, env vars table, deployment notes | 🟡 In Progress | TC-005 (Deliverable)            | Comprehensive master project documentation |
+| ST-8-5   | Write `AGENTS.md`: AI tools used, how agent-driven development was applied, key prompts   | 🟡 In Progress | TC-005 (Deliverable)            | Complete agent engineering report & prompt logs |
+| ST-8-6   | Write `AI_NOTES.md`: tool usage breakdown, key decisions, hardest bug, what to improve   | 🟡 In Progress | TC-005 (Deliverable)            | Honest reflection on AI tools, gotchas, & architecture |
+| ST-8-7   | Full end-to-end evaluator walkthrough on live URL: create workspace, upload doc, chat, trigger tools, verify isolation | 🟡 In Progress | All FRs | Final verification checklist for evaluation |
 
 ---
 

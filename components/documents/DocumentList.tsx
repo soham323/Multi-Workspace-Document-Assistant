@@ -67,7 +67,7 @@ export default function DocumentList({
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Delete failed.";
-      alert(msg);
+      setError(msg);
     } finally {
       setDeletingId(null);
     }

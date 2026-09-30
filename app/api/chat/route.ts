@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { runRagPipeline } from "@/lib/rag/pipeline";
+import { humanizeGeminiError } from "@/lib/gemini/errorHandler";
 import type { Json } from "@/types/database";
 
 const chatRequestSchema = z.object({
@@ -119,10 +120,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result, { status: 200 });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Internal server error";
+    const userFriendlyMsg = humanizeGeminiError(err);
     console.error("Error in POST /api/chat:", err);
     return NextResponse.json(
-      { error: msg, code: "CHAT_PIPELINE_ERROR" },
+      { error: userFriendlyMsg, code: "CHAT_PIPELINE_ERROR" },
       { status: 500 }
     );
   }

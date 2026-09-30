@@ -3,11 +3,11 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.1.0                                            |
-| **Status**    | Draft                                            |
+| **Version**   | 1.2.0                                            |
+| **Status**    | Active                                           |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 19:00 IST                             |
-| **Updated**   | 2026-09-29 19:15 IST                             |
+| **Updated**   | 2026-09-30 14:00 IST                             |
 | **TRD Ref**   | TRD v1.0.0                                       |
 | **Project**   | Multi-Workspace Document Assistant               |
 
@@ -17,6 +17,7 @@
 
 | Version | Date & Time          | Summary of Changes                                                                                                      |
 | :------ | :------------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| 1.2.0   | 2026-09-30 14:00 IST | Stage 7 Security Hardening: Implemented lib/security/promptBuilder.ts with tag sanitization & prompt boundaries, added 30s LLM timeout wrapper in lib/rag/pipeline.ts, added input preservation & retry in ChatContainer, confirmed Zod malformed tool rejection & unknown tool guard in registry, verified SHA-256 ingestion idempotency, and automated test suite scripts/test-stage7-hardening.ts. |
 | 1.1.0   | 2026-09-29 19:15 IST | Locked all 5 OTDs: SSE streaming, DOCX+mammoth, Supabase cloud, React Context+localStorage, 10-turn history window    |
 | 1.0.0   | 2026-09-29 19:00 IST | Initial TDS created from TRD v1.0.0 — all sections drafted                                                             |
 

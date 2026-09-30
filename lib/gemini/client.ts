@@ -12,6 +12,11 @@ export const geminiClient = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Model identifiers — change here to upgrade models globally
 export const CHAT_MODEL = process.env.GEMINI_CHAT_MODEL || "gemini-2.5-flash";
+export const FALLBACK_CHAT_MODELS = [
+  CHAT_MODEL,
+  "gemini-2.0-flash",
+  "gemini-1.5-flash",
+].filter((m, idx, arr) => arr.indexOf(m) === idx);
 export const EMBEDDING_MODEL = process.env.GEMINI_EMBEDDING_MODEL || "gemini-embedding-001";
 export const EMBEDDING_DIMENSIONS = 768;
 

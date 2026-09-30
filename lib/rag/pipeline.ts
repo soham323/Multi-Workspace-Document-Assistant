@@ -8,7 +8,7 @@
 
 import { retrieveWorkspaceChunks } from "./retriever";
 import { buildRagSystemPrompt, buildRefusalResponse } from "./prompt";
-import { geminiClient, CHAT_MODEL } from "@/lib/gemini/client";
+import { geminiClient, FALLBACK_CHAT_MODELS } from "@/lib/gemini/client";
 import { WORKSPACE_TOOLS, executeTool } from "@/lib/tools/registry";
 import type { ChatTurn, ChatApiResponse, Citation, ToolCallResult } from "@/types/app";
 
@@ -37,36 +37,89 @@ No workspace documents matched the user's query.
   "I could not find any relevant information in the documents of this workspace to answer your question."`;
   }
 
-  // 3. Initialize Gemini model with tools & system instructions
-  const model = geminiClient.getGenerativeModel({
-    model: CHAT_MODEL,
-    systemInstruction: {
-      role: "system",
-      parts: [{ text: systemInstruction }],
-    },
-    tools: [{ functionDeclarations: WORKSPACE_TOOLS }],
-    generationConfig: {
-      temperature: 0.2, // Low temperature for high precision & reliable tool calling
-      maxOutputTokens: 2048,
-    },
-  });
-
-  // 4. Format multi-turn conversation history (last 10 turns)
+  // 3. Format multi-turn conversation history (last 10 turns)
   const recentHistory = history.slice(-10);
   const formattedHistory = recentHistory.map((turn) => ({
     role: turn.role === "assistant" ? "model" : "user",
     parts: [{ text: turn.content }],
   }));
 
-  const chat = model.startChat({
-    history: formattedHistory,
-  });
+  const LLM_TIMEOUT_MS = parseInt(process.env.LLM_TIMEOUT_MS || "30000", 10);
 
-  // 5. First LLM turn
-  let response = await chat.sendMessage(question);
+  async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, operationName: string): Promise<T> {
+    let timer: NodeJS.Timeout;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => {
+        reject(new Error(`${operationName} timed out after ${timeoutMs / 1000}s. Please check your network or try again.`));
+      }, timeoutMs);
+    });
+
+    try {
+      return await Promise.race([promise, timeoutPromise]);
+    } finally {
+      clearTimeout(timer!);
+    }
+  }
+
+  // 4. Model Failover Loop: attempts primary model first, seamlessly falls back if 503 (high demand) or 429
+  let activeChat: any = null;
+  let response: any = null;
+  let lastError: unknown = null;
+
+  for (const modelCandidate of FALLBACK_CHAT_MODELS) {
+    try {
+      const model = geminiClient.getGenerativeModel({
+        model: modelCandidate,
+        systemInstruction: {
+          role: "system",
+          parts: [{ text: systemInstruction }],
+        },
+        tools: [{ functionDeclarations: WORKSPACE_TOOLS }],
+        generationConfig: {
+          temperature: 0.2, // Low temperature for high precision & reliable tool calling
+          maxOutputTokens: 2048,
+        },
+      });
+
+      const candidateChat = model.startChat({
+        history: formattedHistory,
+      });
+
+      response = await withTimeout(
+        candidateChat.sendMessage(question),
+        LLM_TIMEOUT_MS,
+        `LLM chat generation (${modelCandidate})`
+      );
+
+      activeChat = candidateChat;
+      break; // Succeeded!
+    } catch (err: unknown) {
+      lastError = err;
+      const errStr = String(err).toLowerCase();
+      const isTransient =
+        errStr.includes("503") ||
+        errStr.includes("429") ||
+        errStr.includes("high demand") ||
+        errStr.includes("service unavailable");
+
+      if (isTransient) {
+        console.warn(`[Gemini Failover] Model ${modelCandidate} busy (503/429), attempting next fallback model...`);
+        await new Promise((r) => setTimeout(r, 600)); // Short 600ms backoff
+        continue;
+      } else {
+        // Non-transient error: stop and throw
+        throw err;
+      }
+    }
+  }
+
+  if (!activeChat || !response) {
+    throw lastError || new Error("All AI models are temporarily busy. Please try again shortly.");
+  }
+
   const toolCallsMade: ToolCallResult[] = [];
 
-  // 6. Multi-turn tool execution loop
+  // 5. Multi-turn tool execution loop
   let iterations = 0;
   const MAX_TOOL_ITERATIONS = 5;
 
@@ -96,7 +149,11 @@ No workspace documents matched the user's query.
     }
 
     // Feed tool results back into the conversation for the LLM to complete its turn
-    response = await chat.sendMessage(functionResponses);
+    response = await withTimeout(
+      activeChat.sendMessage(functionResponses),
+      LLM_TIMEOUT_MS,
+      "LLM tool continuation"
+    );
   }
 
   // 7. If no tool was called and zero document chunks matched, return honest refusal
