@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:security": "tsx scripts/test-stage7-hardening.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -26,6 +26,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.7",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

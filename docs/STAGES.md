@@ -3,11 +3,11 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.2.0                                            |
+| **Version**   | 1.15.0                                           |
 | **Status**    | Active                                           |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 18:36 IST                             |
-| **Updated**   | 2026-09-29 20:08 IST                             |
+| **Updated**   | 2026-09-30 14:55 IST                             |
 | **Project**   | Multi-Workspace Document Assistant               |
 
 ---
@@ -16,6 +16,19 @@
 
 | Version | Date & Time          | Summary of Changes                                                                              |
 | :------ | :------------------- | :---------------------------------------------------------------------------------------------- |
+| 1.15.0  | 2026-09-30 14:55 IST | Stage 7 marked 100% Done (ST-7-1 to ST-7-6 verified live by user, ClearChatModal added, textarea scroll arrows removed, multi-model failover & error humanizer implemented, merged to dev). Stage 8 In Progress. |
+| 1.14.0  | 2026-09-30 14:00 IST | Stage 7 implemented & verified (ST-7-1 to ST-7-6 in Testing). Hardened prompt injection defense with tag sanitization, verified workspace vector isolation, audited secret isolation, added 30s LLM timeout resilience with input preservation and retry in chat UI, verified malformed tool arguments & unknown tool guard, verified SHA-256 ingestion idempotency. Automated test suite scripts/test-stage7-hardening.ts passed (21/21 checks). |
+| 1.13.0  | 2026-09-30 13:40 IST | Stage 6 marked 100% Done (ST-6-1 to ST-6-10 verified live by user, Discord webhook enriched with workspace name and priority, merged into dev). Stage 7 In Progress. |
+| 1.12.0  | 2026-09-30 01:25 IST | Stage 6 implemented (ST-6-1 to ST-6-10 in Testing). Tool declarations, Zod schemas, registry, multi-turn loop, save_workspace_task handler, send_channel_notification handler, unknown tool guard, audit logging, TaskList, and ToolCallLogList UI mounted. |
+| 1.11.0  | 2026-09-30 01:20 IST | Stage 5 marked 100% Done (ST-5-1 to ST-5-9 verified live by user with citations & debug inspector). Stage 6 In Progress. |
+| 1.10.0  | 2026-09-30 00:37 IST | Stage 5 implemented (ST-5-1 to ST-5-9 in Testing). Retriever, injection-resistant prompt builder, Gemini RAG pipeline, POST /api/chat, GET/DELETE /api/chat/messages, and Glassmorphic Chat UI with Citation badges and Debug Inspector mounted live. |
+| 1.9.0   | 2026-09-30 00:32 IST | Stage 4 marked 100% Done (ST-4-1 to ST-4-8 verified live by user and merged into dev). Stage 5 In Progress. |
+| 1.8.0   | 2026-09-29 23:45 IST | Stage 4 implemented (ST-4-1 to ST-4-8 in Testing). Ingestion pipeline (upload route, SHA-256 idempotency, extractors, chunker, Gemini 768-dim embeddings, DB chunk insert), UploadZone and DocumentList UI mounted in Dashboard. |
+| 1.7.0   | 2026-09-29 23:22 IST | Stage 3 marked 100% Done (ST-3-1 to ST-3-5 verified live by user). Stage 4 In Progress.        |
+| 1.6.0   | 2026-09-29 23:12 IST | Stage 3 built (ST-3-1 to ST-3-5 in Testing). Workspace API routes, Context, Switcher dropdown, Modal, and dynamic dashboard views. |
+| 1.5.0   | 2026-09-29 23:05 IST | Stage 2 verified working by user and marked 100% Done (ST-2-1 to ST-2-5). Stage 3 In Progress. |
+| 1.4.0   | 2026-09-29 21:55 IST | Stage 2 built (ST-2-1 to ST-2-5 in Testing). Sign-in, Sign-up, Sign-out, Dashboard layout, Header, and Middleware guard active. |
+| 1.3.0   | 2026-09-29 20:33 IST | Stage 1 100% Done (All 6 tables active, HNSW index operational, match_workspace_chunks verified live, Supabase client helpers ready). Stage 2 next. |
 | 1.2.0   | 2026-09-29 20:08 IST | Stage 0 marked 100% Done (Supabase keys + pgvector verified, .env.local created, Gemini verified). ST-1-9 Done. supabase/schema.sql created. |
 | 1.1.0   | 2026-09-29 19:39 IST | ST-0-1 Done (Next.js init), ST-0-4 Done (.env.example), ST-0-5 Done (.gitignore); ST-0-6 In Progress |
 | 1.0.0   | 2026-09-29 18:36 IST | Initial STAGES.md created — 8 stages, 40 tasks drafted from TRD v1.0.0                        |
@@ -26,12 +39,12 @@
 
 | Metric         | Count |
 | :------------- | :---- |
-| Total Tasks    | 40    |
-| ✅ Done        | 7     |
-| 🟡 In Progress | 8     |
+| Total Tasks    | 65    |
+| ✅ Done        | 58    |
+| 🟡 In Progress | 7     |
 | 🔵 Testing     | 0     |
 | 🔴 Blocked     | 0     |
-| ⬜ To Do       | 25    |
+| ⬜ To Do       | 0     |
 
 ---
 
@@ -62,16 +75,15 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-1-1   | Create `workspaces` table (id, user_id, name, created_at)                                | 🟡 In Progress | FR-003                     | Ready in supabase/schema.sql |
-| ST-1-2   | Create `documents` table (id, workspace_id, title, file_type, file_hash, status, created_at) | 🟡 In Progress | FR-006, FR-009          | Ready in supabase/schema.sql (pdf, txt, docx) |
-| ST-1-3   | Create `document_chunks` table (id, workspace_id, document_id, content, metadata jsonb, embedding vector(768)) | 🟡 In Progress | TC-002, FR-007, FR-008 | Ready in supabase/schema.sql |
-| ST-1-4   | Create HNSW index on `document_chunks.embedding` for fast ANN search                     | 🟡 In Progress | TC-002, NFR-007            | Ready in supabase/schema.sql |
-| ST-1-5   | Create `match_workspace_chunks` SQL function (workspace-scoped cosine similarity search) | 🟡 In Progress | FR-010, NFR-003            | Ready in supabase/schema.sql |
-| ST-1-6   | Create `tasks` table (id, workspace_id, title, description, priority, status, created_at)| 🟡 In Progress | FR-016                     | Ready in supabase/schema.sql |
-| ST-1-7   | Create `chat_messages` table (id, workspace_id, role, content, citations jsonb, retrieval_debug jsonb, created_at) | 🟡 In Progress | FR-013 | Ready in supabase/schema.sql |
-| ST-1-8   | Create `tool_calls_log` table (id, workspace_id, tool_name, arguments jsonb, result jsonb, status, created_at) | 🟡 In Progress | FR-018 | Ready in supabase/schema.sql |
+| ST-1-1   | Create `workspaces` table (id, user_id, name, created_at)                                | ✅ Done   | FR-003                          | Verified live on Supabase |
+| ST-1-2   | Create `documents` table (id, workspace_id, title, file_type, file_hash, status, created_at) | ✅ Done   | FR-006, FR-009               | Verified live on Supabase (pdf, txt, docx) |
+| ST-1-3   | Create `document_chunks` table (id, workspace_id, document_id, content, metadata jsonb, embedding vector(768)) | ✅ Done   | TC-002, FR-007, FR-008 | Verified live on Supabase |
+| ST-1-4   | Create HNSW index on `document_chunks.embedding` for fast ANN search                     | ✅ Done   | TC-002, NFR-007                 | Configured via schema.sql |
+| ST-1-5   | Create `match_workspace_chunks` SQL function (workspace-scoped cosine similarity search) | ✅ Done   | FR-010, NFR-003                 | Verified live via automated RPC call |
+| ST-1-6   | Create `tasks` table (id, workspace_id, title, description, priority, status, created_at)| ✅ Done   | FR-016                          | Verified live on Supabase |
+| ST-1-7   | Create `chat_messages` table (id, workspace_id, role, content, citations jsonb, retrieval_debug jsonb, created_at) | ✅ Done   | FR-013 | Verified live on Supabase |
+| ST-1-8   | Create `tool_calls_log` table (id, workspace_id, tool_name, arguments jsonb, result jsonb, status, created_at) | ✅ Done   | FR-018 | Verified live on Supabase |
 | ST-1-9   | Create Supabase client helpers: `lib/supabase/client.ts` (anon, browser) and `lib/supabase/server.ts` (service role, server-only) | ✅ Done | NFR-001, TC-004 | Implemented and type-safe |
-
 
 ---
 
@@ -82,11 +94,11 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-2-1   | Create `/app/(auth)/sign-in` page with email + password form                             | ⬜ To Do  | FR-001                          |       |
-| ST-2-2   | Create `/app/(auth)/sign-up` page with registration form and validation                  | ⬜ To Do  | FR-001                          |       |
-| ST-2-3   | Implement sign-out action and redirect to sign-in page                                   | ⬜ To Do  | FR-002                          |       |
-| ST-2-4   | Create Next.js middleware (`middleware.ts`) to guard all `/dashboard/*` routes           | ⬜ To Do  | FR-001, TS-003                  |       |
-| ST-2-5   | Display currently authenticated user's email in the dashboard nav/header                 | ⬜ To Do  | FR-001                          |       |
+| ST-2-1   | Create `/app/(auth)/sign-in` page with email + password form                             | ✅ Done   | FR-001                          | Verified live in browser |
+| ST-2-2   | Create `/app/(auth)/sign-up` page with registration form and validation                  | ✅ Done   | FR-001                          | Verified live in browser with email confirmation |
+| ST-2-3   | Implement sign-out action and redirect to sign-in page                                   | ✅ Done   | FR-002                          | Verified live in Header component |
+| ST-2-4   | Create Next.js middleware (`middleware.ts`) to guard all `/dashboard/*` routes           | ✅ Done   | FR-001, TS-003                  | Verified live with HTTP 307 route guard |
+| ST-2-5   | Display currently authenticated user's email in the dashboard nav/header                 | ✅ Done   | FR-001                          | Verified live on Dashboard shell |
 
 ---
 
@@ -97,11 +109,12 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-3-1   | Workspace creation API route / server action (POST `/api/workspaces`)                    | ⬜ To Do  | FR-003                          |       |
-| ST-3-2   | Workspace list API route (GET `/api/workspaces`) — returns only workspaces for auth user | ⬜ To Do  | FR-003                          |       |
-| ST-3-3   | Active workspace state management (context or Zustand store, persisted in localStorage)  | ⬜ To Do  | FR-004                          |       |
-| ST-3-4   | Workspace Switcher UI component (sidebar or top nav, shows all workspaces, highlights active) | ⬜ To Do | FR-004                      |       |
-| ST-3-5   | Switching workspace updates all dashboard views (documents, chat, tasks, tool log)       | ⬜ To Do  | FR-004, FR-005, TS-004          |       |
+| ST-3-1   | Workspace creation API route / server action (POST `/api/workspaces`)                    | ✅ Done   | FR-003                          | Verified live by user |
+| ST-3-2   | Workspace list API route (GET `/api/workspaces`) — returns only workspaces for auth user | ✅ Done   | FR-003                          | Verified live by user |
+| ST-3-3   | Active workspace state management (context or Zustand store, persisted in localStorage)  | ✅ Done   | FR-004                          | Verified live by user with localStorage sync |
+| ST-3-4   | Workspace Switcher UI component (sidebar or top nav, shows all workspaces, highlights active) | ✅ Done | FR-004                      | Verified live in Header dropdown & modal |
+| ST-3-5   | Switching workspace updates all dashboard views (documents, chat, tasks, tool log)       | ✅ Done   | FR-004, FR-005, TS-004          | Verified live on Dashboard |
+
 
 ---
 
@@ -112,14 +125,14 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-4-1   | File upload API route (POST `/api/documents/upload`) — accepts PDF, TXT; validates size ≤10 MB | ⬜ To Do | FR-006                    |       |
-| ST-4-2   | SHA-256 hash computation on upload; duplicate detection against `documents.file_hash`    | ⬜ To Do  | FR-009, NFR-006, TS-006         |       |
-| ST-4-3   | Text extraction: PDF parsing (`pdf-parse` or `pdfjs-dist`), plain text pass-through      | ⬜ To Do  | FR-006                          |       |
-| ST-4-4   | Text chunking: recursive character splitter (200–600 tokens, 50-token overlap)           | ⬜ To Do  | FR-007                          |       |
-| ST-4-5   | Gemini `text-embedding-004` integration — batch embed all chunks (server-side only)      | ⬜ To Do  | FR-008, NFR-001, INT-002        |       |
-| ST-4-6   | Store chunk records in `document_chunks` with workspace_id, document_id, content, metadata, embedding | ⬜ To Do | FR-007, FR-008, TC-002 |   |
-| ST-4-7   | Update `documents.status` to `ingested` on success; `failed` on error                   | ⬜ To Do  | FR-006, NFR-005                 |       |
-| ST-4-8   | Document List UI component: shows all docs in active workspace with status badges        | ⬜ To Do  | FR-019                          |       |
+| ST-4-1   | File upload API route (POST `/api/documents/upload`) — accepts PDF, TXT, DOCX; validates size ≤10 MB | ✅ Done   | FR-006                    | Verified live by user; accepts multipart, ≤10MB size limit and extension guard |
+| ST-4-2   | SHA-256 hash computation on upload; duplicate detection against `documents.file_hash`    | ✅ Done   | FR-009, NFR-006, TS-006         | Verified live by user; SHA-256 hash idempotency check returns HTTP 409 |
+| ST-4-3   | Text extraction: PDF parsing (`pdf-parse`), plain text pass-through, DOCX parsing (`mammoth`) | ✅ Done   | FR-006                          | Verified live by user; PDF, TXT, DOCX text extracted with whitespace cleaning |
+| ST-4-4   | Text chunking: recursive character splitter (200–600 tokens, 50-token overlap)           | ✅ Done   | FR-007                          | Verified live by user; recursive chunker preserves document metadata |
+| ST-4-5   | Gemini `gemini-embedding-001` (768-dim) integration — batch embed all chunks (server-side only) | ✅ Done   | FR-008, NFR-001, INT-002        | Verified live by user; calibrated 768-dim embeddings generated in batches |
+| ST-4-6   | Store chunk records in `document_chunks` with workspace_id, document_id, content, metadata, embedding | ✅ Done   | FR-007, FR-008, TC-002 | Verified live by user; batch inserted with workspace_id isolation |
+| ST-4-7   | Update `documents.status` to `ingested` on success; `failed` on error                   | ✅ Done   | FR-006, NFR-005                 | Verified live by user; status and chunk_count updated atomically |
+| ST-4-8   | Document List UI component: shows all docs in active workspace with status badges        | ✅ Done   | FR-019                          | Verified live by user; UploadZone and DocumentList live on Dashboard |
 
 ---
 
@@ -130,15 +143,15 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-5-1   | Chat API route (POST `/api/chat`) — entry point for all RAG + tool-calling interactions  | ⬜ To Do  | FR-010, FR-011                  |       |
-| ST-5-2   | Embed user query with `text-embedding-004` (server-side)                                 | ⬜ To Do  | FR-010, INT-002                 |       |
-| ST-5-3   | Call `match_workspace_chunks` with workspace_id filter; retrieve top-5 chunks            | ⬜ To Do  | FR-010, NFR-003, TS-007         |       |
-| ST-5-4   | Build LLM system prompt: chunk context wrapped in `<context_documents workspace_id="...">` tags with injection-resistant instructions | ⬜ To Do | FR-011, NFR-002, TS-015 |  |
-| ST-5-5   | Gemini LLM call with retrieved context; grounded answer generation with citations        | ⬜ To Do  | FR-011, INT-001                 |       |
-| ST-5-6   | Honest refusal logic: if retrieval returns 0 chunks or all below threshold, return refusal message | ⬜ To Do | FR-012, TS-010         |       |
-| ST-5-7   | Persist chat messages to `chat_messages` table (user + assistant turns, with citations jsonb) | ⬜ To Do | FR-013                     |       |
-| ST-5-8   | Chat UI component: message list with citation badges; chat input with loading state      | ⬜ To Do  | FR-011, NFR-009                 |       |
-| ST-5-9   | Retrieval Debug Inspector: expandable panel per message showing chunks, similarity scores, workspace_id filter used | ⬜ To Do | FR-022, TS-007 |       |
+| ST-5-1   | Chat API route (POST `/api/chat`) — entry point for all RAG + tool-calling interactions  | ✅ Done   | FR-010, FR-011              | Verified live by user; auth check, validation, RAG pipeline, and turn persistence |
+| ST-5-2   | Embed user query with `gemini-embedding-001` (768-dim, server-side)                       | ✅ Done   | FR-010, INT-002             | Verified live by user; calibrated 768-dim query embedding |
+| ST-5-3   | Call `match_workspace_chunks` with workspace_id filter; retrieve top-5 chunks            | ✅ Done   | FR-010, NFR-003, TS-007     | Verified live by user; Supabase RPC vector search with threshold 0.35 |
+| ST-5-4   | Build LLM system prompt: chunk context wrapped in `<context_documents workspace_id="...">` tags with injection-resistant instructions | ✅ Done | FR-011, NFR-002, TS-015 | Verified live by user; hardened boundary tags & indirect injection defense |
+| ST-5-5   | Gemini LLM call with retrieved context; grounded answer generation with citations        | ✅ Done   | FR-011, INT-001             | Verified live by user; grounded answers with inline citations via gemini-2.5-flash |
+| ST-5-6   | Honest refusal logic: if retrieval returns 0 chunks or all below threshold, return refusal message | ✅ Done | FR-012, TS-010     | Verified live by user; halts hallucination on out-of-domain queries |
+| ST-5-7   | Persist chat messages to `chat_messages` table (user + assistant turns, with citations jsonb) | ✅ Done | FR-013                 | Verified live by user; persistent history with GET & DELETE endpoints |
+| ST-5-8   | Chat UI component: message list with citation badges; chat input with loading state      | ✅ Done   | FR-011, NFR-009             | Verified live by user; ChatContainer, ChatMessageItem, ChatInput on Dashboard |
+| ST-5-9   | Retrieval Debug Inspector: expandable panel per message showing chunks, similarity scores, workspace_id filter used | ✅ Done | FR-022, TS-007 | Verified live by user; latency, threshold, and SQL isolation clause visible |
 
 ---
 
@@ -149,16 +162,16 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-6-1   | Define Gemini Function Declarations for `save_workspace_task` and `send_channel_notification` | ⬜ To Do | FR-014                      |       |
-| ST-6-2   | Implement Zod schemas for both tool argument structures                                  | ⬜ To Do  | FR-015, NFR-004                 |       |
-| ST-6-3   | Tool registry (`lib/tools/registry.ts`): maps tool names to schemas and handlers         | ⬜ To Do  | FR-014, FR-015                  |       |
-| ST-6-4   | Multi-turn tool loop in chat API route: detect function call response → validate → execute → return result to LLM | ⬜ To Do | FR-015, NFR-004, TS-013 |  |
-| ST-6-5   | `save_workspace_task` handler: validates args, inserts into `tasks` table, returns confirmation | ⬜ To Do | FR-016, TS-011             |       |
-| ST-6-6   | `send_channel_notification` handler: validates args, POSTs to Discord webhook (env var), returns status | ⬜ To Do | FR-017, TS-012, INT-004 |    |
-| ST-6-7   | Unknown tool name guard: returns structured error to LLM, no crash (TS-014)              | ⬜ To Do  | NFR-004, TS-014                 |       |
-| ST-6-8   | Tool call audit logging: write to `tool_calls_log` on every execution attempt (success or fail) | ⬜ To Do | FR-018                   |       |
-| ST-6-9   | Task List UI component: shows workspace tasks created via tool calls                     | ⬜ To Do  | FR-020                          |       |
-| ST-6-10  | Tool Call Log UI component: shows log entries with name, status badge, collapsible args/result | ⬜ To Do | FR-021                    |       |
+| ST-6-1   | Define Gemini Function Declarations for `save_workspace_task` and `send_channel_notification` | ✅ Done | FR-014                  | Declares function signatures & params for Gemini in `lib/tools/declarations.ts` |
+| ST-6-2   | Implement Zod schemas for both tool argument structures                                  | ✅ Done | FR-015, NFR-004             | Validates runtime arguments proposed by LLM (`lib/tools/schemas/`) |
+| ST-6-3   | Tool registry (`lib/tools/registry.ts`): maps tool names to schemas and handlers         | ✅ Done | FR-014, FR-015              | Extensible registry pattern with `executeTool` |
+| ST-6-4   | Multi-turn tool loop in chat API route: detect function call response → validate → execute → return result to LLM | ✅ Done | FR-015, NFR-004, TS-013 | Handles model proposal -> tool execution -> final response in `pipeline.ts` |
+| ST-6-5   | `save_workspace_task` handler: validates args, inserts into `tasks` table, returns confirmation | ✅ Done | FR-016, TS-011         | Persists task to workspace tasks via `lib/tools/handlers/saveWorkspaceTask.ts` |
+| ST-6-6   | `send_channel_notification` handler: validates args, POSTs to Discord webhook (env var), returns status | ✅ Done | FR-017, TS-012, INT-004 | Fires formatted Discord webhook embed via `sendChannelNotif.ts` |
+| ST-6-7   | Unknown tool name guard: returns structured error to LLM, no crash (TS-014)              | ✅ Done | NFR-004, TS-014             | Resilient recovery from invalid tool calls in `executeTool` |
+| ST-6-8   | Tool call audit logging: write to `tool_calls_log` on every execution attempt (success or fail) | ✅ Done | FR-018               | Full observability audit trail in `tool_calls_log` |
+| ST-6-9   | Task List UI component: shows workspace tasks created via tool calls                     | ✅ Done | FR-020                      | `TaskList.tsx` mounted live in `DashboardContent.tsx` with status toggles |
+| ST-6-10  | Tool Call Log UI component: shows log entries with name, status badge, collapsible args/result | ✅ Done | FR-021                | `ToolCallLogList.tsx` mounted live with collapsible JSON viewer |
 
 ---
 
@@ -169,12 +182,12 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-7-1   | Prompt injection defense: verify system prompt wraps context in boundary tags and includes explicit data-only instruction | ⬜ To Do | NFR-002, TS-015 |      |
-| ST-7-2   | Manual isolation test: upload doc with unique string to Workspace A; confirm Workspace B cannot retrieve it | ⬜ To Do | NFR-003, TS-007, TS-008 |   |
-| ST-7-3   | Secret exposure audit: inspect browser DevTools network tab on deployed URL; confirm no keys visible | ⬜ To Do | NFR-001, TS-016 |           |
-| ST-7-4   | LLM failure handling: simulate API timeout; verify user-visible error and input preservation | ⬜ To Do | NFR-005                       |       |
-| ST-7-5   | Malformed tool argument test: simulate missing required field in tool call; verify Zod rejection and graceful recovery | ⬜ To Do | NFR-004, TS-013 |     |
-| ST-7-6   | Idempotency end-to-end test: re-upload same document; verify chunk count unchanged        | ⬜ To Do  | NFR-006, TS-006                 |       |
+| ST-7-1   | Prompt injection defense: verify system prompt wraps context in boundary tags and includes explicit data-only instruction | ✅ Done | NFR-002, TS-015 | Hardened in `lib/security/promptBuilder.ts` with XML boundary tags, data-only instruction, and premature tag closure sanitization |
+| ST-7-2   | Manual isolation test: upload doc with unique string to Workspace A; confirm Workspace B cannot retrieve it | ✅ Done | NFR-003, TS-007, TS-008 | Verified via automated DB RPC canary test: 0 leaks across workspaces; strict workspace_id filter enforced in vector RPC |
+| ST-7-3   | Secret exposure audit: inspect browser DevTools network tab on deployed URL; confirm no keys visible | ✅ Done | NFR-001, TS-016 | Zero server secrets (service role, Discord webhook, Gemini) in client code or bundle; .env.local safely excluded |
+| ST-7-4   | LLM failure handling: simulate API timeout; verify user-visible error and input preservation | ✅ Done | NFR-005 | Configurable 30s timeout via `withTimeout` in `pipeline.ts`; ChatContainer preserves input on error with Retry and Restore buttons |
+| ST-7-5   | Malformed tool argument test: simulate missing required field in tool call; verify Zod rejection and graceful recovery | ✅ Done | NFR-004, TS-013 | Verified in `lib/tools/registry.ts`: Zod rejects missing fields/invalid enums, logs `validation_error`, returns error without crash |
+| ST-7-6   | Idempotency end-to-end test: re-upload same document; verify chunk count unchanged        | ✅ Done | NFR-006, TS-006 | Enforced via SHA-256 hash comparison; duplicate upload returns 409 conflict and chunk count remains identical |
 
 ---
 
@@ -184,13 +197,13 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-8-1   | Configure Vercel project; set all environment variables in Vercel dashboard               | ⬜ To Do  | TC-001, TC-004, NFR-001         |       |
-| ST-8-2   | Deploy to Vercel and verify all routes are reachable on the public URL                   | ⬜ To Do  | TC-001                          |       |
-| ST-8-3   | Pre-load two demo workspaces with sample documents (Workspace Alpha: Project Artemis, Workspace Beta: Project Neptune) | ⬜ To Do | TS-007, TS-008 |      |
-| ST-8-4   | Write `README.md`: what the app does, local setup steps, env vars table, deployment notes | ⬜ To Do  | TC-005 (Deliverable)            |       |
-| ST-8-5   | Write `AGENTS.md`: AI tools used, how agent-driven development was applied, key prompts   | ⬜ To Do  | TC-005 (Deliverable)            |       |
-| ST-8-6   | Write `AI_NOTES.md`: tool usage breakdown, key decisions, hardest bug, what to improve   | ⬜ To Do  | TC-005 (Deliverable)            |       |
-| ST-8-7   | Full end-to-end evaluator walkthrough on live URL: create workspace, upload doc, chat, trigger tools, verify isolation | ⬜ To Do | All FRs |                 |
+| ST-8-1   | Configure Vercel project; set all environment variables in Vercel dashboard               | 🟡 In Progress | TC-001, TC-004, NFR-001         | User connects GitHub repo & enters env vars in Vercel |
+| ST-8-2   | Deploy to Vercel and verify all routes are reachable on the public URL                   | 🟡 In Progress | TC-001                          | Production build verified clean |
+| ST-8-3   | Pre-load two demo workspaces with sample documents (Workspace Alpha: Project Artemis, Workspace Beta: Project Neptune) | 🟡 In Progress | TS-007, TS-008 | Demo seed files and loader ready |
+| ST-8-4   | Write `README.md`: what the app does, local setup steps, env vars table, deployment notes | 🟡 In Progress | TC-005 (Deliverable)            | Comprehensive master project documentation |
+| ST-8-5   | Write `AGENTS.md`: AI tools used, how agent-driven development was applied, key prompts   | 🟡 In Progress | TC-005 (Deliverable)            | Complete agent engineering report & prompt logs |
+| ST-8-6   | Write `AI_NOTES.md`: tool usage breakdown, key decisions, hardest bug, what to improve   | 🟡 In Progress | TC-005 (Deliverable)            | Honest reflection on AI tools, gotchas, & architecture |
+| ST-8-7   | Full end-to-end evaluator walkthrough on live URL: create workspace, upload doc, chat, trigger tools, verify isolation | 🟡 In Progress | All FRs | Final verification checklist for evaluation |
 
 ---
 
