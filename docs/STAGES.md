@@ -162,16 +162,16 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-6-1   | Define Gemini Function Declarations for `save_workspace_task` and `send_channel_notification` | 🔵 Testing | FR-014                  | Declares function signatures & params for Gemini in `lib/tools/declarations.ts` |
-| ST-6-2   | Implement Zod schemas for both tool argument structures                                  | 🔵 Testing | FR-015, NFR-004             | Validates runtime arguments proposed by LLM (`lib/tools/schemas/`) |
-| ST-6-3   | Tool registry (`lib/tools/registry.ts`): maps tool names to schemas and handlers         | 🔵 Testing | FR-014, FR-015              | Extensible registry pattern with `executeTool` |
-| ST-6-4   | Multi-turn tool loop in chat API route: detect function call response → validate → execute → return result to LLM | 🔵 Testing | FR-015, NFR-004, TS-013 | Handles model proposal -> tool execution -> final response in `pipeline.ts` |
-| ST-6-5   | `save_workspace_task` handler: validates args, inserts into `tasks` table, returns confirmation | 🔵 Testing | FR-016, TS-011         | Persists task to workspace tasks via `lib/tools/handlers/saveWorkspaceTask.ts` |
-| ST-6-6   | `send_channel_notification` handler: validates args, POSTs to Discord webhook (env var), returns status | 🔵 Testing | FR-017, TS-012, INT-004 | Fires formatted Discord webhook embed via `sendChannelNotif.ts` |
-| ST-6-7   | Unknown tool name guard: returns structured error to LLM, no crash (TS-014)              | 🔵 Testing | NFR-004, TS-014             | Resilient recovery from invalid tool calls in `executeTool` |
-| ST-6-8   | Tool call audit logging: write to `tool_calls_log` on every execution attempt (success or fail) | 🔵 Testing | FR-018               | Full observability audit trail in `tool_calls_log` |
-| ST-6-9   | Task List UI component: shows workspace tasks created via tool calls                     | 🔵 Testing | FR-020                      | `TaskList.tsx` mounted live in `DashboardContent.tsx` with status toggles |
-| ST-6-10  | Tool Call Log UI component: shows log entries with name, status badge, collapsible args/result | 🔵 Testing | FR-021                | `ToolCallLogList.tsx` mounted live with collapsible JSON viewer |
+| ST-6-1   | Define Gemini Function Declarations for `save_workspace_task` and `send_channel_notification` | ✅ Done | FR-014                  | Declares function signatures & params for Gemini in `lib/tools/declarations.ts` |
+| ST-6-2   | Implement Zod schemas for both tool argument structures                                  | ✅ Done | FR-015, NFR-004             | Validates runtime arguments proposed by LLM (`lib/tools/schemas/`) |
+| ST-6-3   | Tool registry (`lib/tools/registry.ts`): maps tool names to schemas and handlers         | ✅ Done | FR-014, FR-015              | Extensible registry pattern with `executeTool` |
+| ST-6-4   | Multi-turn tool loop in chat API route: detect function call response → validate → execute → return result to LLM | ✅ Done | FR-015, NFR-004, TS-013 | Handles model proposal -> tool execution -> final response in `pipeline.ts` |
+| ST-6-5   | `save_workspace_task` handler: validates args, inserts into `tasks` table, returns confirmation | ✅ Done | FR-016, TS-011         | Persists task to workspace tasks via `lib/tools/handlers/saveWorkspaceTask.ts` |
+| ST-6-6   | `send_channel_notification` handler: validates args, POSTs to Discord webhook (env var), returns status | ✅ Done | FR-017, TS-012, INT-004 | Fires formatted Discord webhook embed via `sendChannelNotif.ts` |
+| ST-6-7   | Unknown tool name guard: returns structured error to LLM, no crash (TS-014)              | ✅ Done | NFR-004, TS-014             | Resilient recovery from invalid tool calls in `executeTool` |
+| ST-6-8   | Tool call audit logging: write to `tool_calls_log` on every execution attempt (success or fail) | ✅ Done | FR-018               | Full observability audit trail in `tool_calls_log` |
+| ST-6-9   | Task List UI component: shows workspace tasks created via tool calls                     | ✅ Done | FR-020                      | `TaskList.tsx` mounted live in `DashboardContent.tsx` with status toggles |
+| ST-6-10  | Tool Call Log UI component: shows log entries with name, status badge, collapsible args/result | ✅ Done | FR-021                | `ToolCallLogList.tsx` mounted live with collapsible JSON viewer |
 
 ---
 
