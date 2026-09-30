@@ -3,11 +3,11 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.15.0                                           |
-| **Status**    | Active                                           |
+| **Version**   | 1.17.0                                           |
+| **Status**    | Complete                                         |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 18:36 IST                             |
-| **Updated**   | 2026-09-30 14:55 IST                             |
+| **Updated**   | 2026-09-30 17:00 IST                             |
 | **Project**   | Multi-Workspace Document Assistant               |
 
 ---
@@ -16,6 +16,8 @@
 
 | Version | Date & Time          | Summary of Changes                                                                              |
 | :------ | :------------------- | :---------------------------------------------------------------------------------------------- |
+| 1.17.0  | 2026-09-30 17:00 IST | Stage 8 marked 100% Done (ST-8-1 through ST-8-7 verified live). Application deployed to Vercel (https://multi-workspace-document-assistant-nine.vercel.app), pre-loaded Workspace Alpha and Beta with sample documents, upgraded AI chat typography to ChatGPT/Claude standard with glowing list markers and inline citation chips, and documented live evaluator walkthrough in README.md. All 65 tasks 100% Complete. |
+| 1.16.0  | 2026-09-30 15:15 IST | Stage 8 core deliverables authored (ST-8-3, ST-8-4, ST-8-5, ST-8-6 marked Done). Created demo datasets (`demo_data/workspace_alpha_artemis.txt` and `demo_data/workspace_beta_neptune.txt`), comprehensive `README.md`, updated `AGENTS.md`, and authored `AI_NOTES.md`. ST-8-1, ST-8-2, and ST-8-7 In Progress for live Vercel deployment. |
 | 1.15.0  | 2026-09-30 14:55 IST | Stage 7 marked 100% Done (ST-7-1 to ST-7-6 verified live by user, ClearChatModal added, textarea scroll arrows removed, multi-model failover & error humanizer implemented, merged to dev). Stage 8 In Progress. |
 | 1.14.0  | 2026-09-30 14:00 IST | Stage 7 implemented & verified (ST-7-1 to ST-7-6 in Testing). Hardened prompt injection defense with tag sanitization, verified workspace vector isolation, audited secret isolation, added 30s LLM timeout resilience with input preservation and retry in chat UI, verified malformed tool arguments & unknown tool guard, verified SHA-256 ingestion idempotency. Automated test suite scripts/test-stage7-hardening.ts passed (21/21 checks). |
 | 1.13.0  | 2026-09-30 13:40 IST | Stage 6 marked 100% Done (ST-6-1 to ST-6-10 verified live by user, Discord webhook enriched with workspace name and priority, merged into dev). Stage 7 In Progress. |
@@ -40,8 +42,8 @@
 | Metric         | Count |
 | :------------- | :---- |
 | Total Tasks    | 65    |
-| ✅ Done        | 58    |
-| 🟡 In Progress | 7     |
+| ✅ Done        | 65    |
+| 🟡 In Progress | 0     |
 | 🔵 Testing     | 0     |
 | 🔴 Blocked     | 0     |
 | ⬜ To Do       | 0     |
@@ -197,13 +199,13 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-8-1   | Configure Vercel project; set all environment variables in Vercel dashboard               | 🟡 In Progress | TC-001, TC-004, NFR-001         | User connects GitHub repo & enters env vars in Vercel |
-| ST-8-2   | Deploy to Vercel and verify all routes are reachable on the public URL                   | 🟡 In Progress | TC-001                          | Production build verified clean |
-| ST-8-3   | Pre-load two demo workspaces with sample documents (Workspace Alpha: Project Artemis, Workspace Beta: Project Neptune) | 🟡 In Progress | TS-007, TS-008 | Demo seed files and loader ready |
-| ST-8-4   | Write `README.md`: what the app does, local setup steps, env vars table, deployment notes | 🟡 In Progress | TC-005 (Deliverable)            | Comprehensive master project documentation |
-| ST-8-5   | Write `AGENTS.md`: AI tools used, how agent-driven development was applied, key prompts   | 🟡 In Progress | TC-005 (Deliverable)            | Complete agent engineering report & prompt logs |
-| ST-8-6   | Write `AI_NOTES.md`: tool usage breakdown, key decisions, hardest bug, what to improve   | 🟡 In Progress | TC-005 (Deliverable)            | Honest reflection on AI tools, gotchas, & architecture |
-| ST-8-7   | Full end-to-end evaluator walkthrough on live URL: create workspace, upload doc, chat, trigger tools, verify isolation | 🟡 In Progress | All FRs | Final verification checklist for evaluation |
+| ST-8-1   | Configure Vercel project; set all environment variables in Vercel dashboard               | ✅ Done | TC-001, TC-004, NFR-001         | User connected repo & configured all 5 production env vars in Vercel |
+| ST-8-2   | Deploy to Vercel and verify all routes are reachable on the public URL                   | ✅ Done | TC-001                          | Live on https://multi-workspace-document-assistant-nine.vercel.app |
+| ST-8-3   | Pre-load two demo workspaces with sample documents (Workspace Alpha: Project Artemis, Workspace Beta: Project Neptune) | ✅ Done | TS-007, TS-008 | Created and ingested `workspace_alpha_artemis.txt` and `workspace_beta_neptune.txt` into live DB |
+| ST-8-4   | Write `README.md`: what the app does, local setup steps, env vars table, deployment notes | ✅ Done | TC-005 (Deliverable)            | Master README delivered with live credentials, architecture, and step-by-step evaluator walkthrough |
+| ST-8-5   | Write `AGENTS.md`: AI tools used, how agent-driven development was applied, key prompts   | ✅ Done | TC-005 (Deliverable)            | Complete agent engineering report & prompt logs delivered |
+| ST-8-6   | Write `AI_NOTES.md`: tool usage breakdown, key decisions, hardest bug, what to improve   | ✅ Done | TC-005 (Deliverable)            | Honest reflection on AI tools, gotchas, & architecture delivered |
+| ST-8-7   | Full end-to-end evaluator walkthrough on live URL: create workspace, upload doc, chat, trigger tools, verify isolation | ✅ Done | All FRs | All test scenarios verified end-to-end on production deployment |
 
 ---
 

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "eslint",
-    "test:security": "tsx scripts/test-stage7-hardening.ts"
+    "test:security": "tsx scripts/test-stage7-hardening.ts",
+    "db:preload": "tsx --env-file=.env.local scripts/preload-demo.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
