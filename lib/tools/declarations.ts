@@ -44,7 +44,8 @@ export const sendChannelNotificationDeclaration: FunctionDeclaration = {
       },
       level: {
         type: SchemaType.STRING,
-        description: "Severity level: 'info', 'warning', or 'urgent'. Defaults to 'info'.",
+        description:
+          "Severity level: 'info', 'warning', or 'urgent'. Choose 'urgent' for critical tasks, security issues, or immediate action items; 'warning' for risks or cautionary items; 'info' for standard updates.",
       },
     },
     required: ["message"],

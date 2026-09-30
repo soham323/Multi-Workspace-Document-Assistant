@@ -1,6 +1,4 @@
-// lib/tools/handlers/sendChannelNotif.ts
-// Handler for send_channel_notification tool: dispatches formatted webhook to Discord
-
+import { createServerClient } from "@/lib/supabase/server";
 import type { SendChannelNotifInput } from "../schemas/sendChannelNotif";
 
 export async function sendChannelNotifHandler(
@@ -13,6 +11,22 @@ export async function sendChannelNotifHandler(
     throw new Error(
       "DISCORD_WEBHOOK_URL environment variable is not configured. Please add it to .env.local."
     );
+  }
+
+  // Fetch workspace name from Supabase
+  let workspaceName = "Workspace";
+  try {
+    const supabase = createServerClient();
+    const { data: ws } = await supabase
+      .from("workspaces")
+      .select("name")
+      .eq("id", workspaceId)
+      .single();
+    if (ws?.name) {
+      workspaceName = ws.name;
+    }
+  } catch (err) {
+    console.error("Warning: Failed to query workspace name for Discord notification:", err);
   }
 
   // Discord embed colors (hex converted to decimal integers)
@@ -28,19 +42,24 @@ export async function sendChannelNotifHandler(
   const discordPayload = {
     embeds: [
       {
-        title: args.title || "Workspace Assistant Notification",
+        title: args.title || `📢 ${workspaceName} Notification`,
         description: args.message,
         color: embedColor,
         fields: [
           {
-            name: "Workspace ID",
-            value: `\`${workspaceId}\``,
+            name: "Workspace",
+            value: `**${workspaceName}**`,
             inline: true,
           },
           {
             name: "Priority",
             value: level.toUpperCase(),
             inline: true,
+          },
+          {
+            name: "Workspace ID",
+            value: `\`${workspaceId}\``,
+            inline: false,
           },
         ],
         footer: {
