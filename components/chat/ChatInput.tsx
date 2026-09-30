@@ -1,18 +1,37 @@
 // components/chat/ChatInput.tsx
 "use client";
 
-import { useState, useRef, type KeyboardEvent, type FormEvent } from "react";
+import { useState, useRef, useEffect, type KeyboardEvent, type FormEvent } from "react";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   disabled?: boolean;
+  restoredValue?: string | null;
+  onRestoredConsumed?: () => void;
 }
 
 const MAX_MESSAGE_LENGTH = 2000;
 
-export default function ChatInput({ onSendMessage, disabled = false }: ChatInputProps) {
+export default function ChatInput({
+  onSendMessage,
+  disabled = false,
+  restoredValue = null,
+  onRestoredConsumed,
+}: ChatInputProps) {
   const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (restoredValue) {
+      setInput(restoredValue);
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.style.height = "auto";
+        textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`;
+      }
+      onRestoredConsumed?.();
+    }
+  }, [restoredValue, onRestoredConsumed]);
 
   const handleSubmit = (e?: FormEvent) => {
     if (e) e.preventDefault();

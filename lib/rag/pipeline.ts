@@ -62,8 +62,29 @@ No workspace documents matched the user's query.
     history: formattedHistory,
   });
 
+  const LLM_TIMEOUT_MS = parseInt(process.env.LLM_TIMEOUT_MS || "30000", 10);
+
+  async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, operationName: string): Promise<T> {
+    let timer: NodeJS.Timeout;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => {
+        reject(new Error(`${operationName} timed out after ${timeoutMs / 1000}s. Please check your network or try again.`));
+      }, timeoutMs);
+    });
+
+    try {
+      return await Promise.race([promise, timeoutPromise]);
+    } finally {
+      clearTimeout(timer!);
+    }
+  }
+
   // 5. First LLM turn
-  let response = await chat.sendMessage(question);
+  let response = await withTimeout(
+    chat.sendMessage(question),
+    LLM_TIMEOUT_MS,
+    "LLM chat generation"
+  );
   const toolCallsMade: ToolCallResult[] = [];
 
   // 6. Multi-turn tool execution loop
@@ -96,7 +117,11 @@ No workspace documents matched the user's query.
     }
 
     // Feed tool results back into the conversation for the LLM to complete its turn
-    response = await chat.sendMessage(functionResponses);
+    response = await withTimeout(
+      chat.sendMessage(functionResponses),
+      LLM_TIMEOUT_MS,
+      "LLM tool continuation"
+    );
   }
 
   // 7. If no tool was called and zero document chunks matched, return honest refusal
