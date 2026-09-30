@@ -3,11 +3,11 @@
 
 | Field         | Value                                            |
 | :------------ | :----------------------------------------------- |
-| **Version**   | 1.10.0                                           |
+| **Version**   | 1.12.0                                           |
 | **Status**    | Active                                           |
 | **Owner**     | Soham                                            |
 | **Created**   | 2026-09-29 18:36 IST                             |
-| **Updated**   | 2026-09-30 00:37 IST                             |
+| **Updated**   | 2026-09-30 01:25 IST                             |
 | **Project**   | Multi-Workspace Document Assistant               |
 
 ---
@@ -16,6 +16,8 @@
 
 | Version | Date & Time          | Summary of Changes                                                                              |
 | :------ | :------------------- | :---------------------------------------------------------------------------------------------- |
+| 1.12.0  | 2026-09-30 01:25 IST | Stage 6 implemented (ST-6-1 to ST-6-10 in Testing). Tool declarations, Zod schemas, registry, multi-turn loop, save_workspace_task handler, send_channel_notification handler, unknown tool guard, audit logging, TaskList, and ToolCallLogList UI mounted. |
+| 1.11.0  | 2026-09-30 01:20 IST | Stage 5 marked 100% Done (ST-5-1 to ST-5-9 verified live by user with citations & debug inspector). Stage 6 In Progress. |
 | 1.10.0  | 2026-09-30 00:37 IST | Stage 5 implemented (ST-5-1 to ST-5-9 in Testing). Retriever, injection-resistant prompt builder, Gemini RAG pipeline, POST /api/chat, GET/DELETE /api/chat/messages, and Glassmorphic Chat UI with Citation badges and Debug Inspector mounted live. |
 | 1.9.0   | 2026-09-30 00:32 IST | Stage 4 marked 100% Done (ST-4-1 to ST-4-8 verified live by user and merged into dev). Stage 5 In Progress. |
 | 1.8.0   | 2026-09-29 23:45 IST | Stage 4 implemented (ST-4-1 to ST-4-8 in Testing). Ingestion pipeline (upload route, SHA-256 idempotency, extractors, chunker, Gemini 768-dim embeddings, DB chunk insert), UploadZone and DocumentList UI mounted in Dashboard. |
@@ -35,11 +37,11 @@
 | Metric         | Count |
 | :------------- | :---- |
 | Total Tasks    | 65    |
-| ✅ Done        | 33    |
+| ✅ Done        | 42    |
 | 🟡 In Progress | 0     |
-| 🔵 Testing     | 9     |
+| 🔵 Testing     | 10    |
 | 🔴 Blocked     | 0     |
-| ⬜ To Do       | 23    |
+| ⬜ To Do       | 13    |
 
 ---
 
@@ -138,15 +140,15 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-5-1   | Chat API route (POST `/api/chat`) — entry point for all RAG + tool-calling interactions  | 🔵 Testing | FR-010, FR-011              | Handles auth, validation, RAG pipeline, and turn persistence |
-| ST-5-2   | Embed user query with `gemini-embedding-001` (768-dim, server-side)                       | 🔵 Testing | FR-010, INT-002             | Uses calibrated 768-dim embedText via Gemini SDK |
-| ST-5-3   | Call `match_workspace_chunks` with workspace_id filter; retrieve top-5 chunks            | 🔵 Testing | FR-010, NFR-003, TS-007     | Supabase RPC vector search with threshold 0.35 |
-| ST-5-4   | Build LLM system prompt: chunk context wrapped in `<context_documents workspace_id="...">` tags with injection-resistant instructions | 🔵 Testing | FR-011, NFR-002, TS-015 | Hardened boundary tags and indirect prompt injection defense |
-| ST-5-5   | Gemini LLM call with retrieved context; grounded answer generation with citations        | 🔵 Testing | FR-011, INT-001             | Grounded answers via gemini-2.5-flash with low temperature (0.2) |
-| ST-5-6   | Honest refusal logic: if retrieval returns 0 chunks or all below threshold, return refusal message | 🔵 Testing | FR-012, TS-010     | Halts hallucination when no matching chunks are found |
-| ST-5-7   | Persist chat messages to `chat_messages` table (user + assistant turns, with citations jsonb) | 🔵 Testing | FR-013                 | Chronological chat persistence with GET/DELETE API |
-| ST-5-8   | Chat UI component: message list with citation badges; chat input with loading state      | 🔵 Testing | FR-011, NFR-009             | ChatContainer, ChatMessageItem, ChatInput mounted on Dashboard |
-| ST-5-9   | Retrieval Debug Inspector: expandable panel per message showing chunks, similarity scores, workspace_id filter used | 🔵 Testing | FR-022, TS-007 | Per-message debug inspector displaying latency, threshold, and SQL filter |
+| ST-5-1   | Chat API route (POST `/api/chat`) — entry point for all RAG + tool-calling interactions  | ✅ Done   | FR-010, FR-011              | Verified live by user; auth check, validation, RAG pipeline, and turn persistence |
+| ST-5-2   | Embed user query with `gemini-embedding-001` (768-dim, server-side)                       | ✅ Done   | FR-010, INT-002             | Verified live by user; calibrated 768-dim query embedding |
+| ST-5-3   | Call `match_workspace_chunks` with workspace_id filter; retrieve top-5 chunks            | ✅ Done   | FR-010, NFR-003, TS-007     | Verified live by user; Supabase RPC vector search with threshold 0.35 |
+| ST-5-4   | Build LLM system prompt: chunk context wrapped in `<context_documents workspace_id="...">` tags with injection-resistant instructions | ✅ Done | FR-011, NFR-002, TS-015 | Verified live by user; hardened boundary tags & indirect injection defense |
+| ST-5-5   | Gemini LLM call with retrieved context; grounded answer generation with citations        | ✅ Done   | FR-011, INT-001             | Verified live by user; grounded answers with inline citations via gemini-2.5-flash |
+| ST-5-6   | Honest refusal logic: if retrieval returns 0 chunks or all below threshold, return refusal message | ✅ Done | FR-012, TS-010     | Verified live by user; halts hallucination on out-of-domain queries |
+| ST-5-7   | Persist chat messages to `chat_messages` table (user + assistant turns, with citations jsonb) | ✅ Done | FR-013                 | Verified live by user; persistent history with GET & DELETE endpoints |
+| ST-5-8   | Chat UI component: message list with citation badges; chat input with loading state      | ✅ Done   | FR-011, NFR-009             | Verified live by user; ChatContainer, ChatMessageItem, ChatInput on Dashboard |
+| ST-5-9   | Retrieval Debug Inspector: expandable panel per message showing chunks, similarity scores, workspace_id filter used | ✅ Done | FR-022, TS-007 | Verified live by user; latency, threshold, and SQL isolation clause visible |
 
 ---
 
@@ -157,16 +159,16 @@
 
 | Task ID  | Task Description                                                                          | Status    | Related FRs / NFRs / TCs        | Notes |
 | :------- | :---------------------------------------------------------------------------------------- | :-------- | :------------------------------- | :---- |
-| ST-6-1   | Define Gemini Function Declarations for `save_workspace_task` and `send_channel_notification` | ⬜ To Do | FR-014                      |       |
-| ST-6-2   | Implement Zod schemas for both tool argument structures                                  | ⬜ To Do  | FR-015, NFR-004                 |       |
-| ST-6-3   | Tool registry (`lib/tools/registry.ts`): maps tool names to schemas and handlers         | ⬜ To Do  | FR-014, FR-015                  |       |
-| ST-6-4   | Multi-turn tool loop in chat API route: detect function call response → validate → execute → return result to LLM | ⬜ To Do | FR-015, NFR-004, TS-013 |  |
-| ST-6-5   | `save_workspace_task` handler: validates args, inserts into `tasks` table, returns confirmation | ⬜ To Do | FR-016, TS-011             |       |
-| ST-6-6   | `send_channel_notification` handler: validates args, POSTs to Discord webhook (env var), returns status | ⬜ To Do | FR-017, TS-012, INT-004 |    |
-| ST-6-7   | Unknown tool name guard: returns structured error to LLM, no crash (TS-014)              | ⬜ To Do  | NFR-004, TS-014                 |       |
-| ST-6-8   | Tool call audit logging: write to `tool_calls_log` on every execution attempt (success or fail) | ⬜ To Do | FR-018                   |       |
-| ST-6-9   | Task List UI component: shows workspace tasks created via tool calls                     | ⬜ To Do  | FR-020                          |       |
-| ST-6-10  | Tool Call Log UI component: shows log entries with name, status badge, collapsible args/result | ⬜ To Do | FR-021                    |       |
+| ST-6-1   | Define Gemini Function Declarations for `save_workspace_task` and `send_channel_notification` | 🔵 Testing | FR-014                  | Declares function signatures & params for Gemini in `lib/tools/declarations.ts` |
+| ST-6-2   | Implement Zod schemas for both tool argument structures                                  | 🔵 Testing | FR-015, NFR-004             | Validates runtime arguments proposed by LLM (`lib/tools/schemas/`) |
+| ST-6-3   | Tool registry (`lib/tools/registry.ts`): maps tool names to schemas and handlers         | 🔵 Testing | FR-014, FR-015              | Extensible registry pattern with `executeTool` |
+| ST-6-4   | Multi-turn tool loop in chat API route: detect function call response → validate → execute → return result to LLM | 🔵 Testing | FR-015, NFR-004, TS-013 | Handles model proposal -> tool execution -> final response in `pipeline.ts` |
+| ST-6-5   | `save_workspace_task` handler: validates args, inserts into `tasks` table, returns confirmation | 🔵 Testing | FR-016, TS-011         | Persists task to workspace tasks via `lib/tools/handlers/saveWorkspaceTask.ts` |
+| ST-6-6   | `send_channel_notification` handler: validates args, POSTs to Discord webhook (env var), returns status | 🔵 Testing | FR-017, TS-012, INT-004 | Fires formatted Discord webhook embed via `sendChannelNotif.ts` |
+| ST-6-7   | Unknown tool name guard: returns structured error to LLM, no crash (TS-014)              | 🔵 Testing | NFR-004, TS-014             | Resilient recovery from invalid tool calls in `executeTool` |
+| ST-6-8   | Tool call audit logging: write to `tool_calls_log` on every execution attempt (success or fail) | 🔵 Testing | FR-018               | Full observability audit trail in `tool_calls_log` |
+| ST-6-9   | Task List UI component: shows workspace tasks created via tool calls                     | 🔵 Testing | FR-020                      | `TaskList.tsx` mounted live in `DashboardContent.tsx` with status toggles |
+| ST-6-10  | Tool Call Log UI component: shows log entries with name, status badge, collapsible args/result | 🔵 Testing | FR-021                | `ToolCallLogList.tsx` mounted live with collapsible JSON viewer |
 
 ---
 

@@ -7,11 +7,14 @@ import CreateWorkspaceModal from "@/components/workspace/CreateWorkspaceModal";
 import UploadZone from "@/components/documents/UploadZone";
 import DocumentList from "@/components/documents/DocumentList";
 import ChatContainer from "@/components/chat/ChatContainer";
+import TaskList from "@/components/tasks/TaskList";
+import ToolCallLogList from "@/components/tools/ToolCallLogList";
 
 export default function DashboardContent({ userEmail }: { userEmail: string }) {
   const { workspaces, activeWorkspace, loading } = useWorkspace();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [refreshDocsTrigger, setRefreshDocsTrigger] = useState(0);
+  const [refreshToolsTrigger, setRefreshToolsTrigger] = useState(0);
 
   if (loading) {
     return (
@@ -262,9 +265,31 @@ export default function DashboardContent({ userEmail }: { userEmail: string }) {
           <ChatContainer
             workspaceId={activeWorkspace.id}
             workspaceName={activeWorkspace.name}
+            onToolCallExecuted={() => setRefreshToolsTrigger((prev) => prev + 1)}
           />
         )}
       </div>
+
+      {/* Stage 6: Tool Actions & Observability (Task List & Tool Call Audit Log) */}
+      {activeWorkspace && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+            gap: "24px",
+            alignItems: "start",
+          }}
+        >
+          <TaskList
+            workspaceId={activeWorkspace.id}
+            refreshTrigger={refreshToolsTrigger}
+          />
+          <ToolCallLogList
+            workspaceId={activeWorkspace.id}
+            refreshTrigger={refreshToolsTrigger}
+          />
+        </div>
+      )}
 
       <CreateWorkspaceModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
