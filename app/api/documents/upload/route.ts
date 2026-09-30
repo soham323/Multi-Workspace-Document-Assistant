@@ -2,11 +2,15 @@
 // Handles file upload, SHA-256 idempotency check, and runs ingestion pipeline
 
 import { createServerClient } from "@supabase/ssr";
+import { createServerClient as createAdminClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import crypto from "node:crypto";
 import { runIngestionPipeline } from "@/lib/ingestion";
 import type { FileType } from "@/types/app";
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 const MAX_SIZE_MB = parseInt(process.env.MAX_UPLOAD_SIZE_MB || "10", 10);
 const MAX_BYTES = MAX_SIZE_MB * 1024 * 1024;
@@ -43,7 +47,7 @@ function detectFileType(filename: string): FileType | null {
 
 export async function POST(request: NextRequest) {
   try {
-    const { supabase, user } = await getSupabaseUser();
+    const { user } = await getSupabaseUser();
 
     if (!user) {
       return NextResponse.json(
@@ -70,8 +74,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const adminDb = createAdminClient();
+
     // Verify workspace belongs to user
-    const { data: ws, error: wsError } = await supabase
+    const { data: ws, error: wsError } = await adminDb
       .from("workspaces")
       .select("id")
       .eq("id", workspaceId)
@@ -114,7 +120,7 @@ export async function POST(request: NextRequest) {
     const fileHash = crypto.createHash("sha256").update(buffer).digest("hex");
 
     // Idempotency check: see if file with identical hash was already ingested
-    const { data: existingDoc } = await supabase
+    const { data: existingDoc } = await adminDb
       .from("documents")
       .select("id, title, status")
       .eq("workspace_id", workspaceId)
@@ -133,7 +139,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create initial document record with status = 'processing'
-    const { data: newDoc, error: insertError } = await supabase
+    const { data: newDoc, error: insertError } = await adminDb
       .from("documents")
       .insert({
         workspace_id: workspaceId,
@@ -147,8 +153,9 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (insertError || !newDoc) {
+      console.error("Failed to insert document record:", insertError);
       return NextResponse.json(
-        { error: "Failed to create document record.", code: "DB_ERROR" },
+        { error: `Failed to create document record: ${insertError?.message || "Unknown"}`, code: "DB_ERROR" },
         { status: 500 }
       );
     }

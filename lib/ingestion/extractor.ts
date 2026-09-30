@@ -1,8 +1,6 @@
 // lib/ingestion/extractor.ts
 // Multi-format document text extraction: PDF, DOCX, and TXT
 
-import { PDFParse } from "pdf-parse";
-import mammoth from "mammoth";
 import type { FileType } from "@/types/app";
 
 export interface ExtractedDocument {
@@ -28,6 +26,8 @@ export function cleanText(raw: string): string {
 
 /**
  * Extracts plain text from an uploaded file buffer based on its fileType.
+ * Uses dynamic imports to prevent serverless bundle crashes and ensure
+ * TXT processing is instant without loading native/worker dependencies.
  */
 export async function extractText(
   fileBuffer: Buffer,
@@ -38,6 +38,9 @@ export async function extractText(
 
   switch (fileType) {
     case "pdf": {
+      // Dynamically load pdf-parse worker and parser only when needed
+      await import("pdf-parse/worker");
+      const { PDFParse } = await import("pdf-parse");
       const parser = new PDFParse({ data: fileBuffer });
       try {
         const textResult = await parser.getText();
@@ -50,6 +53,9 @@ export async function extractText(
     }
 
     case "docx": {
+      // Dynamically load mammoth only when a DOCX is uploaded
+      const mammothModule = await import("mammoth");
+      const mammoth = mammothModule.default || mammothModule;
       const result = await mammoth.extractRawText({ buffer: fileBuffer });
       rawText = result.value || "";
       break;
