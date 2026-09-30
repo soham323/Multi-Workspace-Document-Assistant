@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import type { ChatMessage, ChatTurn } from "@/types/app";
 import ChatMessageItem from "./ChatMessageItem";
 import ChatInput from "./ChatInput";
+import ClearChatModal from "./ClearChatModal";
 
 interface ChatContainerProps {
   workspaceId: string;
@@ -29,6 +30,8 @@ export default function ChatContainer({
   const [error, setError] = useState<string | null>(null);
   const [preservedInput, setPreservedInput] = useState<string | null>(null);
   const [restoredText, setRestoredText] = useState<string | null>(null);
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false);
+  const [clearingHistory, setClearingHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -133,12 +136,9 @@ export default function ChatContainer({
     }
   };
 
-  const handleClearHistory = async () => {
-    if (!confirm("Are you sure you want to clear the chat history for this workspace?")) {
-      return;
-    }
-
+  const handleConfirmClearHistory = async () => {
     try {
+      setClearingHistory(true);
       const res = await fetch(`/api/chat/messages?workspaceId=${encodeURIComponent(workspaceId)}`, {
         method: "DELETE",
       });
@@ -149,9 +149,13 @@ export default function ChatContainer({
       }
 
       setMessages([]);
+      setIsClearModalOpen(false);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error clearing history.";
-      alert(msg);
+      setError(msg);
+      setIsClearModalOpen(false);
+    } finally {
+      setClearingHistory(false);
     }
   };
 
@@ -199,7 +203,7 @@ export default function ChatContainer({
         {messages.length > 0 && (
           <button
             type="button"
-            onClick={handleClearHistory}
+            onClick={() => setIsClearModalOpen(true)}
             className="btn-secondary"
             style={{
               padding: "5px 10px",
@@ -459,6 +463,15 @@ export default function ChatContainer({
           onRestoredConsumed={() => setRestoredText(null)}
         />
       </div>
+
+      {/* Clear Chat Confirmation Modal */}
+      <ClearChatModal
+        isOpen={isClearModalOpen}
+        workspaceName={workspaceName}
+        loading={clearingHistory}
+        onConfirm={handleConfirmClearHistory}
+        onClose={() => setIsClearModalOpen(false)}
+      />
     </div>
   );
 }

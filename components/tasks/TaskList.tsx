@@ -66,7 +66,7 @@ export default function TaskList({ workspaceId, refreshTrigger = 0 }: TaskListPr
       );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error updating task.";
-      alert(msg);
+      setError(msg);
     } finally {
       setUpdatingId(null);
     }
@@ -87,7 +87,7 @@ export default function TaskList({ workspaceId, refreshTrigger = 0 }: TaskListPr
       setTasks((prev) => prev.filter((t) => t.id !== taskId));
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error deleting task.";
-      alert(msg);
+      setError(msg);
     }
   };
 
