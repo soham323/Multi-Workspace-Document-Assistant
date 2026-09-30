@@ -104,7 +104,13 @@ export default function UploadZone({ workspaceId, onUploadSuccess }: UploadZoneP
       clearTimeout(stepTimer1);
       clearTimeout(stepTimer2);
 
-      const data = await res.json();
+      const rawText = await res.text();
+      let data: Record<string, any> = {};
+      try {
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        data = {};
+      }
 
       if (!res.ok) {
         if (res.status === 409) {
@@ -112,7 +118,11 @@ export default function UploadZone({ workspaceId, onUploadSuccess }: UploadZoneP
             `Duplicate document: "${file.name}" has already been ingested into this workspace. Re-indexing was skipped.`
           );
         } else {
-          setError(data.error || "Upload failed. Please check the file and try again.");
+          setError(
+            data.error ||
+            (rawText && rawText.length < 200 ? rawText : null) ||
+            `Upload failed (HTTP ${res.status}). Please check the file and try again.`
+          );
         }
         return;
       }

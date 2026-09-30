@@ -9,6 +9,9 @@ import { runRagPipeline } from "@/lib/rag/pipeline";
 import { humanizeGeminiError } from "@/lib/gemini/errorHandler";
 import type { Json } from "@/types/database";
 
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+
 const chatRequestSchema = z.object({
   message: z
     .string()
