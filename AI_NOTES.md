@@ -36,7 +36,7 @@
 
 ## 3. The Hardest Bug & Wrong Turn
 
-### The Bug: Unhandled 503 Provider Demand Spikes & Native Browser Freeze
+### Bug 1: Unhandled 503 Provider Demand Spikes & Native Browser Freeze
 - **What Went Wrong**: During testing of Stage 6/7, Gemini's newest `gemini-2.5-flash` model returned intermittent HTTP 503 errors (`The model is overloaded. Please try again later.`). The AI initially suggested wrapping the chat route in a standard `try/catch` and returning an HTTP 500 error to the client. Simultaneously, the AI had implemented chat history clearing using native browser `confirm()` and `alert()` modals.
 - **How We Noticed**:
   1. During live user testing, asking a question during an AI Studio traffic burst resulted in an ugly "Failed to fetch" red banner, completely erasing the user's carefully typed prompt.
@@ -45,6 +45,18 @@
   1. We rejected the simple HTTP 500 try/catch and engineered the **Dynamic Model Failover Chain** in `lib/gemini/client.ts` and `lib/rag/pipeline.ts`. If `gemini-2.5-flash` reports high demand, the pipeline gracefully downgrades to `gemini-2.0-flash` and then `gemini-1.5-flash`.
   2. We created `lib/gemini/errorHandler.ts` to transform provider error codes into human-readable advice.
   3. We built a custom glassmorphic `ClearChatModal.tsx` and modified `ChatContainer.tsx` to preserve user input upon failure, adding an instant "Retry" action.
+
+### Bug 2: Vercel Serverless Function Crash on Ingestion (`pdf-parse` Worker & Timeout)
+- **What Went Wrong**: Upon deploying to Vercel production, attempting to upload documents yielded `500 Internal Server Error: Failed to execute 'json' on 'Response': Unexpected end of JSON input`. The Vercel function crashed immediately without returning a response payload.
+- **How We Diagnosed It Together**:
+  1. `pdf-parse` v2 attempted to initialize worker threads and canvas references upon module import at the top of `lib/ingestion/extractor.ts`. In Vercel's serverless Linux environment, this crashed the process during module loading before the request handler even began—even when uploading pure `.txt` files!
+  2. Vercel default function execution limits (10s) threatened long embedding batches.
+  3. The client-side `UploadZone.tsx` unconditionally executed `res.json()` before inspecting `res.ok`, masking server error bodies with a generic JavaScript parse error.
+- **How We Fixed It**:
+  1. **Lazy Dynamic Imports**: Refactored `lib/ingestion/extractor.ts` to dynamically import `pdf-parse` and `mammoth` strictly on-demand inside `switch (fileType)`. Text uploads (`.txt`) now execute synchronously with zero external module loading and 0ms latency.
+  2. **Route Timeout & Dynamic Directives**: Added `export const dynamic = "force-dynamic"` and `export const maxDuration = 60` to `/api/documents/upload` and `/api/chat`.
+  3. **Privileged Ingestion DB Operations**: Switched database record creation in `/api/documents/upload` to the service-role client after verifying tenant ownership, preventing RLS `WITH CHECK` edge cases.
+  4. **Resilient Client Error Handling**: Updated `UploadZone.tsx` to safely inspect `res.text()` before JSON parsing.
 
 ---
 
